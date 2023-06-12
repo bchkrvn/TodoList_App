@@ -22,7 +22,6 @@ App wrote on Django with PostgreSQL.
 ```
 SECRET_KEY='django-insecure-tt6yx98!zil62p7&pv*%q@&!aogyyp#bi)ea3ls8k(cpw4d93#'
 DEBUG=1
-DB_ENGINE=django.db.backends.postgresql
 DB_NAME=todo_list_app
 DB_USER=todo_list_app
 DB_PASSWORD=todo_list_app
