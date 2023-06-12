@@ -10,7 +10,7 @@ App wrote on Django with PostgreSQL.
 * PostgreSQL
 
 ## How to start:
-1) Clone thor repository:    
+1) Clone this repository:    
 `git clone https://github.com/bchkrvn/Market-API.git`
 
 2) Create a virtual environment:  
@@ -20,17 +20,14 @@ App wrote on Django with PostgreSQL.
 `venv\Scripts\activate.bat`
 4) Set up environment variables in the .env file:  
 ```
+SECRET_KEY='django-insecure-tt6yx98!zil62p7&pv*%q@&!aogyyp#bi)ea3ls8k(cpw4d93#'
+DEBUG=1
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=skymarket
-DB_USER=skymarket
-DB_PASSWORD=skymarket
+DB_NAME=todo_list_app
+DB_USER=todo_list_app
+DB_PASSWORD=todo_list_app
 DB_HOST=localhost
 DB_PORT=5432
-EMAIL_HOST=...
-EMAIL_HOST_USER=...
-EMAIL_HOST_PASSWORD=...
-EMAIL_PORT=...
-DEBUG=1
 ```
 
 5) Go to the **postgres** folder and run **postgres** with the command:  
