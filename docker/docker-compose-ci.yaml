@@ -21,7 +21,7 @@ services:
       POSTGRES_DB: $DB_NAME
     restart: always
     ports:
-      - "5432:5433"
+      - "5433:5432"
 
   api:
     image: bchkrvn/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
