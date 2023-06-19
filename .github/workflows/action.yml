@@ -6,10 +6,8 @@ jobs:
     steps:
       - name: clone code
         uses: actions/checkout@v2
-      - name: docker find
-        run: cd api
       - name: docker build
-        run: docker build -t bchkrvn/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+        run: docker build -t bchkrvn/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID ./api
       - name: docker login
         run: echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: docker push
