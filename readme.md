@@ -10,15 +10,13 @@ App wrote on Django with PostgreSQL.
 * PostgreSQL
 
 ## How to start:
+**Server is running on [130.193.53.220:8080/]()**
+
+*If you want to run local:*
 1) Clone this repository:    
 `git clone https://github.com/bchkrvn/Market-API.git`
 
-2) Create a virtual environment:  
-`python -m venv venv`
-
-3) Activate a virtual environment:  
-`venv\Scripts\activate.bat`
-4) Set up environment variables in the .env file:  
+2) Set up environment variables in the **.docker_env** file:  
 ```
 SECRET_KEY='django-insecure-tt6yx98!zil62p7&pv*%q@&!aogyyp#bi)ea3ls8k(cpw4d93#'
 DEBUG=1
@@ -29,14 +27,8 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-5) Go to the **postgres** folder and run **postgres** with the command:  
+3) Go to the **postgres** folder and run project with the command:  
 `docker-compose up -d`
-
-6) Go to the todolist_app folder and make migrations with the command:  
-`python3 manage.py migrate`
-
-7) Run backend with command:  
-`python3 manage.py runserver`
 
 
 ## Documentation:
