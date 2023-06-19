@@ -27,7 +27,7 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-3) Go to the **postgres** folder and run project with the command:  
+3) Go to the **docker** folder and run project with the command:  
 `docker-compose up -d`
 
 
