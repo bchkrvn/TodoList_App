@@ -19,32 +19,32 @@ services:
     image: postgres:latest
     volumes:
       - postgres_data_todo_app:/var/lib/postgresql/data
-    env_file: .db_env
+    env_file: .env
     restart: always
     healthcheck:
-      test: pg_isready -U todo_list_app -d todo_list_app
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_PASSWORD}
       interval: 5s
       timeout: 5s
       retries: 5
 
   migrations:
-    image: ${DOCKER_USER}/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-    env_file: .api_env
+    image: ${DOCKER_USER}/todolist:latest
+    env_file: .env
     command: python3 manage.py migrate
     depends_on:
       postgres:
         condition: service_healthy
 
   static:
-    image: ${DOCKER_USER}/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-    env_file: .api_env
+    image: ${DOCKER_USER}/todolist:latest
+    env_file: .env
     command: python3 manage.py collectstatic -c --no-input
     volumes:
       - django_static:/code/static/
 
   api:
-    image: ${DOCKER_USER}/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-    env_file: .api_env
+    image: ${DOCKER_USER}/todolist:latest
+    env_file: .env
     tty: true
     depends_on:
       postgres:
