@@ -24,9 +24,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          source: "deploy/*"
-          target: "docker"
-          strip_components: 1
+        run: |
+          cat docker/docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
+          cat docker/nginx.conf | envsubst > deploy/nginx.conf
       - name: deploy app
         uses: appleboy/ssh-action@master
         with:

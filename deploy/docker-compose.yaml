@@ -28,7 +28,7 @@ services:
       retries: 5
 
   migrations:
-    image: bchkrvn/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: ${DOCKER_USERNAME}/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file: .api_env
     command: python3 manage.py migrate
     depends_on:
@@ -36,14 +36,14 @@ services:
         condition: service_healthy
 
   static:
-    image: bchkrvn/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: ${DOCKER_USERNAME}/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file: .api_env
     command: python3 manage.py collectstatic -c --no-input
     volumes:
       - django_static:/code/static/
 
   api:
-    image: bchkrvn/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: ${DOCKER_USERNAME}/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file: .api_env
     tty: true
     depends_on:
