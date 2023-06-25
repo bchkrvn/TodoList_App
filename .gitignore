@@ -128,10 +128,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-deploy/.api_env
-deploy/.db_env
-docker/.api_env
-docker/.db_env
+deploy/.deploy_env
+docker/.docker_env
 
 # Spyder project settings
 .spyderproject
