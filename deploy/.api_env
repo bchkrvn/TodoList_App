@@ -1,7 +1,0 @@
-SECRET_KEY='django-insecure-tt6yx98!zil62p7&pv*%q@&!aogyyp#bi)ea3ls8k(cpw4d93#'
-DEBUG=0
-DB_NAME=db
-DB_USER=todo_list_app
-DB_PASSWORD=VNXMP2W85x8yMZ9hxDwQLZYZqQSSER
-DB_HOST=postgres
-DB_PORT=5432
