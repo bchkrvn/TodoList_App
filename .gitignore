@@ -129,6 +129,8 @@ env.bak/
 venv.bak/
 deploy/.api_env
 deploy/.db_env
+docker/.api_env
+docker/.db_env
 
 # Spyder project settings
 .spyderproject

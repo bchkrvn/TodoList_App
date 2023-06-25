@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  frontend:
+    image: sermalenk/skypro-front:lesson-34
+    restart: on-failure
+    depends_on:
+      api:
+        condition: service_started
+      static:
+        condition: service_completed_successfully
+    ports:
+      - "80:80"
+    volumes:
+      - ../nginx.conf:/etc/nginx/conf.d/default.conf
+      - django_static:/usr/share/nginx/html/static/
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_data_todo_app:/var/lib/postgresql/data
+    env_file: .db_env
+    restart: always
+    healthcheck:
+      test: pg_isready -U todo_list_app -d todo_list_app
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrations:
+    image: ${DOCKER_USERNAME}/todolist:latest
+    env_file: .api_env
+    command: python3 manage.py migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  static:
+    image: ${DOCKER_USERNAME}/todolist:latest
+    env_file: .api_env
+    command: python3 manage.py collectstatic -c --no-input
+    volumes:
+      - django_static:/code/static/
+
+  api:
+    image: ${DOCKER_USERNAME}/todolist:latest
+    env_file: .api_env
+    tty: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    volumes:
+      - ../api:/code/
+
+volumes:
+  postgres_data_todo_app:
+  django_static:
