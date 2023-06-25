@@ -7,6 +7,7 @@ class UserFormAdmin(forms.ModelForm):
     password = forms.CharField(label='Password',
                                widget=forms.PasswordInput,
                                help_text="Your password can't be too similar")
+
     password2 = forms.CharField(label='Repeat password',
                                 widget=forms.PasswordInput,
                                 help_text="Enter the same password as before, for verification")
