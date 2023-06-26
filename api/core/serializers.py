@@ -12,6 +12,8 @@ class UserSingUpSerializer(serializers.ModelSerializer):
     password_repeat = serializers.CharField(max_length=128,
                                             style={'input_type': 'password'},
                                             write_only=True)
+    email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all(),
+                                                               message='Адрес электронной почты уже используется')])
 
     class Meta:
         model = User
@@ -39,13 +41,13 @@ class UserSingUpSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(validators=[UniqueValidator(queryset=User.objects.all(),
+                                                                 message='Имя пользователя уже занято')])
+
+    email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all(),
+                                                               message='Адрес электронной почты уже используется')])
+
     class Meta:
         model = User
-        fields = ('username', 'password')
-
-    # def validate_password(self, password):
-    #     if self.context['request'].user.check_password(password):
-    #         return password
-    #     else:
-    #         raise serializers.ValidationError('Неверный пароль')
+        fields = ("id", "username", "first_name", "last_name", "email")
