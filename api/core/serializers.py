@@ -51,3 +51,32 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", "first_name", "last_name", "email")
+
+
+class UserChangePasswordSerializer(serializers.ModelSerializer):
+    new_password = serializers.CharField(write_only=True)
+    old_password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('old_password', 'new_password')
+
+    def validate_new_password(self, new_password):
+        try:
+            validate_password(new_password)
+        except ValidationError as exc:
+            raise serializers.ValidationError(str(exc))
+
+        return new_password
+
+    def validate_old_password(self, old_password):
+        if self.context['request'].user.check_password(old_password):
+            return old_password
+        else:
+            raise serializers.ValidationError('Старый пароль введен неверно')
+
+    def save(self, **kwargs):
+        user = self.instance
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user

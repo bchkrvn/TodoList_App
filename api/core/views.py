@@ -1,12 +1,12 @@
-from django.contrib.auth import authenticate, login
-from django.core.exceptions import ValidationError
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveUpdateAPIView
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import rest_framework.status as status
 from rest_framework.views import APIView
 
 from .models import User
-from .serializers import UserSingUpSerializer, UserSerializer
+from .serializers import UserSingUpSerializer, UserSerializer, UserChangePasswordSerializer
 
 
 class UserSingUpView(CreateAPIView):
@@ -27,4 +27,22 @@ class UserLoginView(APIView):
 
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
-    pass
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserUpdatePasswordAPIView(UpdateAPIView):
+    serializer_class = UserChangePasswordSerializer
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
