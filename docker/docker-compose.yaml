@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson-34
+    image: sermalenk/skypro-front:lesson-35
     restart: on-failure
     ports:
       - '80:80'
@@ -16,7 +16,7 @@ services:
       - django_static:/usr/share/nginx/html/static/
 
   postgres:
-    image: postgres:latest
+    image: postgres:15.1
     volumes:
       - postgres_data_todo_app:/var/lib/postgresql/data
     env_file: .docker_env

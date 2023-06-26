@@ -3,5 +3,5 @@ from django.db import models
 
 
 class User(AbstractUser):
-    email = models.EmailField("email address", blank=False, null=False)
+    email = models.EmailField("email address", blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
