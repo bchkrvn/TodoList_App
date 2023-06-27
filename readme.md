@@ -16,6 +16,7 @@ App wrote on Django with PostgreSQL.
 1) Clone this repository:    
 `git clone https://github.com/bchkrvn/TodoList_App.git`
 
+
 2) Go to the **docker** folder and set up environment variables in the **.docker_env** file:  
 ```
 POSTGRES_USER=...
