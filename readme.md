@@ -14,7 +14,8 @@ App wrote on Django with PostgreSQL.
 
 *If you want to run local:*
 1) Clone this repository:    
-`git clone https://github.com/bchkrvn/Market-API.git`
+`git clone https://github.com/bchkrvn/TodoList_App.git`
+
 
 2) Go to the **docker** folder and set up environment variables in the **.docker_env** file:  
 ```
