@@ -10,21 +10,23 @@ App wrote on Django with PostgreSQL.
 * PostgreSQL
 
 ## How to start:
-**Server is running on [130.193.53.220:8080/]()**
+**Server is running on [130.193.53.220]()**
 
 *If you want to run local:*
 1) Clone this repository:    
 `git clone https://github.com/bchkrvn/Market-API.git`
 
-2) Set up environment variables in the **.docker_env** file:  
+2) Go to the **docker** folder and set up environment variables in the **.docker_env** file:  
 ```
-SECRET_KEY='django-insecure-tt6yx98!zil62p7&pv*%q@&!aogyyp#bi)ea3ls8k(cpw4d93#'
-DEBUG=1
-DB_NAME=todo_list_app
-DB_USER=todo_list_app
-DB_PASSWORD=todo_list_app
-DB_HOST=localhost
-DB_PORT=5432
+POSTGRES_USER=...
+POSTGRES_PASSWORD=...
+POSTGRES_DB=...
+SECRET_KEY=...
+DEBUG=...
+DB_HOST=...
+DB_PORT=...
+VK_ID=...
+VK_SECRET=..
 ```
 
 3) Go to the **docker** folder and run project with the command:  
