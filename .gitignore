@@ -165,3 +165,6 @@ docker/.api_env
 
 # static
 api/static/
+
+#swager
+swager.json

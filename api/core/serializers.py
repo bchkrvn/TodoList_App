@@ -23,7 +23,7 @@ class UserSingUpSerializer(serializers.ModelSerializer):
         cd = self.initial_data
         if cd['password'] != cd['password_repeat']:
             raise serializers.ValidationError("Пароли не совпадают")
-        return cd['password_repeat']
+        return password_repeat
 
     def validate_password(self, password):
         try:
