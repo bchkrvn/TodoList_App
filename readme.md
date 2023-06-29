@@ -38,4 +38,5 @@ VK_SECRET=..
 ...
 
 ## Tests:
-...
+If you want to test API, run tests with command:  
+`pytest`
