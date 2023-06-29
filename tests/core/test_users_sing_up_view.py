@@ -46,7 +46,7 @@ class TestUserSingUpView:
         assert response_1.status_code == HTTP_400_BAD_REQUEST, \
             f'Вернулся код {response_1.status_code} вместо {HTTP_400_BAD_REQUEST}'
 
-        # Обращение с повторяющимся username, легким паролем и неверный повторным паролем
+        # Обращение с повторяющимся username, легким паролем и неверным повторным паролем
         data_2 = {
             'first_name': 'Test',
             'last_name': 'Test',

@@ -16,8 +16,8 @@ class UserSingUpView(CreateAPIView):
 
 class UserLoginView(APIView):
     def post(self, request, *args, **kwargs):
-        username = request.data['username']
-        password = request.data['password']
+        username = request.data.get('username')
+        password = request.data.get('password')
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
