@@ -75,7 +75,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     put=extend_schema(request=UserChangePasswordSerializer,
                       description='Update user password', summary='Password update',
                       responses={200: OpenApiResponse(response=UserChangePasswordSerializer,
-                                                      description='Password updated successfuly'),
+                                                      description='Password updated successfully'),
                                  400: OpenApiResponse(response=UserChangePasswordSerializer.errors,
                                                       description='Bad Request, (something invalid)'),
                                  403: OpenApiResponse(description='Forbidden')})
