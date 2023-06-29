@@ -19,9 +19,10 @@ class UserLoginView(APIView):
         username = request.data['username']
         password = request.data['password']
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
-            return Response(status=status.HTTP_200_OK)
+            return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

@@ -18,6 +18,9 @@ class UserSingUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password', 'password_repeat')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
     def validate_password_repeat(self, password_repeat):
         cd = self.initial_data
