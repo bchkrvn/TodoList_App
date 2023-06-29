@@ -10,7 +10,7 @@ App wrote on Django with PostgreSQL.
 * PostgreSQL
 
 ## How to start:
-**Server is running on [130.193.53.220]()**
+**Server is running [here](130.193.53.220)**
 
 *If you want to run local:*
 1) Clone this repository:    
@@ -35,7 +35,7 @@ VK_SECRET=..
 
 
 ## Documentation:
-...
+If you want to read documentation, you can find it [here](130.193.53.220/docs/)
 
 ## Tests:
 If you want to test API, run tests with command:  

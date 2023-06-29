@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',
     'core.apps.CoreConfig',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,16 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+
+# DRF
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema"
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "ToDo-list API",
+    "DESCRIPTION": "ToDo-list API for ToDo-list application",
+    "VERSION": "1.0.0",
+    "CONTACT": "tg: @asderuss",
+    'SERVERS': "130.193.53.220"
+}
