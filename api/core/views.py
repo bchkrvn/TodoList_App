@@ -29,7 +29,6 @@ class UserLoginView(APIView):
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
@@ -42,7 +41,6 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
 class UserUpdatePasswordAPIView(UpdateAPIView):
     serializer_class = UserChangePasswordSerializer
-    queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

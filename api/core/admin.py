@@ -1,12 +1,12 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
-from .forms import UserFormAdmin
 from .models import User
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(UserAdmin):
     list_display = ['username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', ]
     list_filter = ['is_staff', 'is_active']
     list_editable = ['is_staff', 'is_active']
-    form = UserFormAdmin
+    readonly_fields = ('date_joined', 'last_login')
