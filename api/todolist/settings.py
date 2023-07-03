@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'goals.apps.GoalsConfig',
     'drf_spectacular',
+    "django_filters"
 ]
 
 MIDDLEWARE = [

@@ -14,6 +14,9 @@ class Category(models.Model):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
+    def __str__(self):
+        return self.title
+
 
 class StatusChoices(models.IntegerChoices):
     to_do = 1, 'К выполнению'
@@ -45,4 +48,12 @@ class Goal(models.Model):
     created = models.DateTimeField(verbose_name='Создана', auto_now_add=True)
     updated = models.DateTimeField(verbose_name='Обновлена', auto_now=True)
 
+    class Meta:
+        verbose_name = 'Цель'
+        verbose_name_plural = 'Цели'
 
+    def __str__(self):
+        return self.title
+
+# class Comment(models.Model):
+#     pass
