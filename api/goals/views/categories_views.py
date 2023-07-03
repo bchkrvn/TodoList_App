@@ -7,7 +7,6 @@ from rest_framework import filters
 
 
 class CategoryCreateAPIView(CreateAPIView):
-    queryset = Category.objects.all()
     serializer_class = CategoryCreateSerializer
     permission_classes = [IsAuthenticated]
 

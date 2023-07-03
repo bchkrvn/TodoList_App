@@ -1,7 +1,7 @@
 from django.db import models
 from django_filters import rest_framework, IsoDateTimeFilter
 
-from .models import Goal
+from .models import Goal, Comment
 
 
 class GoalFilter(rest_framework.FilterSet):
@@ -17,3 +17,9 @@ class GoalFilter(rest_framework.FilterSet):
         filter_overrides = {
             models.DateTimeField: {"filter_class": IsoDateTimeFilter},
         }
+
+
+class CommentFilter(rest_framework.FilterSet):
+    class Meta:
+        model = Comment
+        fields = ['goal']

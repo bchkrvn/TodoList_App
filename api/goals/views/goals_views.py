@@ -6,11 +6,10 @@ from rest_framework import filters
 from ..serializers.goals_serializers import GoalCreateSerializer, GoalSerializer
 from ..permission import IsOwner
 from ..models import Goal, StatusChoices
-from ..goals_filters import GoalFilter
+from ..filters import GoalFilter
 
 
 class GoalCreateAPIView(CreateAPIView):
-    queryset = Goal.objects.all()
     serializer_class = GoalCreateSerializer
     permission_classes = [IsAuthenticated]
 

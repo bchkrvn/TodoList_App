@@ -36,7 +36,7 @@ class Goal(models.Model):
     title = models.CharField(verbose_name='Название', max_length=255)
     user = models.ForeignKey(User, verbose_name='Автор', on_delete=models.PROTECT, related_name='goals')
     description = models.TextField(verbose_name='Описание')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='goals')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='goals')
     status = models.PositiveSmallIntegerField(verbose_name='Статус',
                                               choices=StatusChoices.choices,
                                               default=StatusChoices.to_do)
@@ -55,5 +55,11 @@ class Goal(models.Model):
     def __str__(self):
         return self.title
 
-# class Comment(models.Model):
-#     pass
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, verbose_name='Автор', related_name='Комментарии',
+                             on_delete=models.SET_NULL, null=True)
+    goal = models.ForeignKey(Goal, verbose_name='Цель', related_name='Комментарии', on_delete=models.CASCADE)
+    text = models.TextField()
+    created = models.DateTimeField(verbose_name='Создан', auto_now_add=True)
+    updated = models.DateTimeField(verbose_name='Обновлен', auto_now=True)
