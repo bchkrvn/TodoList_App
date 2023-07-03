@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',
     'core.apps.CoreConfig',
+    'goals.apps.GoalsConfig',
     'drf_spectacular',
+    "django_filters"
 ]
 
 MIDDLEWARE = [
@@ -146,7 +148,8 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
 
 # DRF
 REST_FRAMEWORK = {
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema"
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
 }
 
 SPECTACULAR_SETTINGS = {
