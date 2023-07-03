@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Comment, Goal, StatusChoices
+from ..models import Comment, StatusChoices
 from core.serializers import UserSerializer
 
 

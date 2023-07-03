@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Goal, Category
+from ..models import Goal
 from core.serializers import UserSerializer
 
 
