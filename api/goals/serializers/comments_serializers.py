@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Comment, Goal
+from ..models import Comment, Goal, StatusChoices
 from core.serializers import UserSerializer
 
 
@@ -9,6 +9,12 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('user', 'text', 'goal')
+
+    def validate_goal(self, goal):
+        if goal.status is StatusChoices.archived:
+            raise serializers.ValidationError('not allowed in deleted goal')
+        if goal.user is not self.context['request'].user:
+            raise serializers.ValidationError('not owner of goal')
 
 
 class CommentSerializer(serializers.ModelSerializer):
