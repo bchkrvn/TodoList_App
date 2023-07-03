@@ -13,7 +13,7 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
 
     def validated_category(self, category):
         if category.user is not self.context['request'].user:
@@ -26,17 +26,3 @@ class GoalSerializer(serializers.ModelSerializer):
         model = Goal
         fields = '__all__'
         read_only_fields = ['created', 'updated']
-
-
-class GoalRUDSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Goal
-        fields = "__all__"
-        read_only_fields = ('user', 'created', 'updated')
-
-    def validated_category(self, category):
-        if category.user is not self.context['request'].user:
-            raise serializers.ValidationError("It isn't your category")
-        if category.is_deleted:
-            raise serializers.ValidationError('This category is deleted')
-        return category

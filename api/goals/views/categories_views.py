@@ -2,8 +2,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from rest_framework.permissions import IsAuthenticated
 from goals.models import Category, Goal, StatusChoices
 from goals.permission import IsOwner
-from ..serializers.categorises_serializers import CategoryCreateSerializer, CategorySerializer, \
-    CategorySerializerRUD
+from ..serializers.categorises_serializers import CategoryCreateSerializer, CategorySerializer
 from rest_framework import filters
 
 
@@ -28,7 +27,7 @@ class CategoryListAPIView(ListAPIView):
 
 class CategoryRUDAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializerRUD
+    serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):

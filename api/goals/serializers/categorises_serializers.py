@@ -14,17 +14,9 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Category
         fields = ('title', 'user', 'id', 'created', 'updated')
         read_only_fields = ('id', 'created', 'updated', 'user')
-
-
-class CategorySerializerRUD(serializers.ModelSerializer):
-
-    class Meta:
-        model = Category
-        fields = ('title', 'id', 'created', 'updated')
-        read_only_fields = ('id', 'created', 'updated')

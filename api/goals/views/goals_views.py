@@ -3,7 +3,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
 
-from ..serializers.goals_serializers import GoalCreateSerializer, GoalSerializer, GoalRUDSerializer
+from ..serializers.goals_serializers import GoalCreateSerializer, GoalSerializer
 from ..permission import IsOwner
 from ..models import Goal, StatusChoices
 from ..goals_filters import GoalFilter
@@ -32,7 +32,7 @@ class GoalListAPIView(ListAPIView):
 
 class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
-    serializer_class = GoalRUDSerializer
+    serializer_class = GoalSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
