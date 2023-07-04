@@ -3,26 +3,23 @@ from ..models import Goal
 from core.serializers import UserSerializer
 
 
-class GoalCreateSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
+class BaseGoalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
         fields = '__all__'
         read_only_fields = ['created', 'updated']
 
-
-class GoalSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
-    def validated_category(self, category):
-        if category.user is not self.context['request'].user:
+    def validate_category(self, category):
+        if category.user != self.context['request'].user:
             raise serializers.ValidationError("It isn't your category")
         if category.is_deleted:
             raise serializers.ValidationError('This category is deleted')
         return category
 
-    class Meta:
-        model = Goal
-        fields = '__all__'
-        read_only_fields = ['created', 'updated']
+
+class GoalCreateSerializer(BaseGoalSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+
+class GoalSerializer(BaseGoalSerializer):
+    user = UserSerializer(read_only=True)
