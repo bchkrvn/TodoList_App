@@ -4,6 +4,9 @@ from pytest_factoryboy import register
 import factories
 
 register(factories.UserFactory)
+register(factories.CategoryFactory)
+register(factories.GoalFactory)
+register(factories.CommentFactory)
 
 
 @pytest.fixture

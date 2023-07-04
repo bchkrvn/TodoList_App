@@ -20,8 +20,8 @@ class CommentListAPIView(ListAPIView):
     serializer_class = CommentSerializer
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_class = CommentFilter
-    ordering_fields = ('created', 'updated')
-    ordering = ['-created']
+    ordering_fields = ('created', '-updated')
+    ordering = ['-created', '-updated']
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user).exclude(goal__status=StatusChoices.archived).select_related('user')
