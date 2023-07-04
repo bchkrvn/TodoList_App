@@ -23,3 +23,11 @@ def user_with_password(password):
     user.set_password(password)
     user.save()
     return user, password
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def login_client_with_user(user_with_password, client):
+    user, password = user_with_password
+    client.login(username=user.username, password=password)
+    return client, user

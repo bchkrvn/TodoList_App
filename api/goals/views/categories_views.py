@@ -1,6 +1,6 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
-from goals.models import Category, Goal, StatusChoices
+from goals.models import Category, StatusChoices
 from goals.permission import IsOwner
 from ..serializers.categorises_serializers import CategoryCreateSerializer, CategorySerializer
 from rest_framework import filters
