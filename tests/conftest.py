@@ -31,3 +31,12 @@ def login_client_with_user(user_with_password, client):
     user, password = user_with_password
     client.login(username=user.username, password=password)
     return client, user
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def client_and_category(login_client_with_user):
+    client, user = login_client_with_user
+    category = factories.CategoryFactory.create(user=user)
+    not_user_categories = factories.CategoryFactory.create_batch(10)
+    return client, category

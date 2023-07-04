@@ -25,7 +25,7 @@ class GoalListAPIView(ListAPIView):
     search_fields = ['title', 'description']
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).exclude(status=4).select_related('user')
+        return self.queryset.filter(user=self.request.user).exclude(status=StatusChoices.archived).select_related('user')
 
 
 class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):

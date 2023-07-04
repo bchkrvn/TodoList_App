@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from ..serializers.comments_serializers import CommentSerializer, CommentCreateSerializer
 from ..filters import CommentFilter
-from ..models import Comment
+from ..models import Comment, StatusChoices
 from ..permission import IsOwner
 
 
@@ -24,7 +24,7 @@ class CommentListAPIView(ListAPIView):
     ordering = ['-created']
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).select_related('user')
+        return self.queryset.filter(user=self.request.user).exclude(goal__status=StatusChoices.archived).select_related('user')
 
 
 class CommentRUDAPIView(RetrieveUpdateDestroyAPIView):
@@ -33,4 +33,4 @@ class CommentRUDAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).select_related('user')
+        return self.queryset.filter(user=self.request.user).exclude(goal__status=StatusChoices.archived).select_related('user')
