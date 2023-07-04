@@ -44,7 +44,7 @@ class Goal(models.Model):
                                                 choices=PriorityChoices.choices,
                                                 default=PriorityChoices.low)
 
-    due_date = models.DateTimeField(verbose_name='Дедлайн', null=True, blank=True)
+    due_date = models.DateField(verbose_name='Дедлайн', null=True, blank=True)
     created = models.DateTimeField(verbose_name='Создана', auto_now_add=True)
     updated = models.DateTimeField(verbose_name='Обновлена', auto_now=True)
 

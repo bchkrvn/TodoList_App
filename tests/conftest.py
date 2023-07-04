@@ -38,5 +38,14 @@ def login_client_with_user(user_with_password, client):
 def client_and_category(login_client_with_user):
     client, user = login_client_with_user
     category = factories.CategoryFactory.create(user=user)
-    not_user_categories = factories.CategoryFactory.create_batch(10)
+    not_user_categories = factories.CategoryFactory.create_batch(5)
     return client, category
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def client_and_goal(login_client_with_user):
+    client, user = login_client_with_user
+    goal = factories.GoalFactory.create(user=user)
+    not_user_goals = factories.GoalFactory.create_batch(5)
+    return client, goal
