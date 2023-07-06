@@ -49,6 +49,28 @@ def client_and_category(login_client_with_user):
 @pytest.mark.django_db
 def client_and_goal(login_client_with_user):
     client, user = login_client_with_user
-    goal = factories.GoalFactory.create(user=user)
+    category = factories.CategoryFactory.create(user=user)
+    goal = factories.GoalFactory.create(user=user, category=category)
     not_user_goals = factories.GoalFactory.create_batch(5)
     return client, goal
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def client_and_comment(login_client_with_user):
+    client, user = login_client_with_user
+    category = factories.CategoryFactory.create(user=user)
+    goal = factories.GoalFactory.create(user=user, category=category)
+    comment = factories.CommentFactory.create(user=user, goal=goal)
+    not_user_comments = factories.CommentFactory.create_batch(5)
+    return client, comment
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def users_comment(user_with_password):
+    user, password = user_with_password
+    category = factories.CategoryFactory.create(user=user)
+    goal = factories.GoalFactory.create(user=user, category=category)
+    comment = factories.CommentFactory.create(user=user, goal=goal)
+    return comment
