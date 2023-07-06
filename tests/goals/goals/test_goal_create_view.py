@@ -96,7 +96,7 @@ class TestGoalCreateView:
                 f'Вернулся код {response_3.status_code} вместо {HTTP_400_BAD_REQUEST}'
             assert set(data.keys()) == set(response_3.data.keys()), 'Возвращаются не те ошибки'
 
-        # Обращение к чужой категории с неправильным статусом и приоритетом
+        # Обращение к чужой цели с неправильным статусом и приоритетом
         data_4 = {
             'title': 'Test title',
             'description': 'Test description',
@@ -113,7 +113,7 @@ class TestGoalCreateView:
             f'Вернулся код {response_4.status_code} вместо {HTTP_400_BAD_REQUEST}'
         assert {'priority', 'status', 'category'} == set(response_4.data.keys()), 'Возвращаются не те ошибки'
 
-        # Обращение к удаленной категории
+        # Обращение к удаленной цели
         category.is_deleted = True
         category.save()
 

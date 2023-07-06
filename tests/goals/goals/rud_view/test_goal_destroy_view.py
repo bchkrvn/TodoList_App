@@ -33,7 +33,7 @@ class TestGoalDestroyView:
         assert response_1.status_code is HTTP_403_FORBIDDEN, \
             f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
 
-        # Обращение к чужой и несуществующей категории
+        # Обращение к чужой и несуществующей цели
         client.login(username=user.username, password=password)
         for pk in [not_users_goal.pk, 10000000000]:
             response_2 = client.delete(

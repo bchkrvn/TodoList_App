@@ -5,7 +5,7 @@ from goals.serializers.goals_serializers import GoalSerializer
 from factories import GoalFactory
 
 
-class TestCoalRetrieveAPIView:
+class TestGoalRetrieveAPIView:
     @pytest.mark.django_db
     def test_goal_retrieve_view(self, client_and_goal):
         client, goal = client_and_goal
@@ -30,17 +30,11 @@ class TestCoalRetrieveAPIView:
         assert response_1.status_code is HTTP_403_FORBIDDEN, \
             f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
 
-        # Обращение не к своей категории
+        # Обращение не к своей цели или к несуществующей цели
         client.login(username=user.username, password=password)
-        response_2 = client.get(
-            f'/goals/goal/{not_users_goal.pk}'
-        )
-        assert response_2.status_code is HTTP_404_NOT_FOUND, \
-            f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
-
-        # Обращение к несуществующей категории
-        response_3 = client.get(
-            f'/goals/goal/100000000'
-        )
-        assert response_3.status_code is HTTP_404_NOT_FOUND, \
-            f'Вернулся код {response_3.status_code} вместо {HTTP_404_NOT_FOUND}'
+        for g_id in [not_users_goal.pk, 1000000000]:
+            response_2 = client.get(
+                f'/goals/goal/{g_id}'
+            )
+            assert response_2.status_code is HTTP_404_NOT_FOUND, \
+                f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'

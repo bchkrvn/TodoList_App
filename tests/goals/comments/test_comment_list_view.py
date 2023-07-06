@@ -104,6 +104,25 @@ class TestCommentListView:
             f'Вернулись неверные данные'
 
     @pytest.mark.django_db
+    def test_comments_list_view_ordering_last_updated(self, get_data, response_keys):
+        client, comments, goal = get_data
+
+        response = client.get(
+            f'/goals/goal_comment/list',
+            {"limit": self.PAGE_SIZE, 'goal': goal.pk, 'ordering': 'created'}
+        )
+        assert response.status_code is HTTP_200_OK, \
+            f'Вернулся код  {response.status_code} вместо {HTTP_200_OK}'
+        assert response_keys == set(response.data.keys()), 'Ключи ответа не сходятся'
+        assert response.data['next'] is not None, 'Нет ссылки на следующую страницу'
+        assert response.data['previous'] is None, 'Есть ссылка на предыдущую страницу'
+        assert response.data['count'] == self.COUNT, 'Неверное количество записей'
+        assert len(response.data['results']) == self.PAGE_SIZE, 'Вернулось не то количество элементов'
+        comments.sort(key=lambda c: c.updated)
+        assert response.data['results'] == CommentSerializer(comments[:self.PAGE_SIZE], many=True).data, \
+            f'Вернулись неверные данные'
+
+    @pytest.mark.django_db
     def test_comments_list_view_errors(self, client, user_with_password):
         another_user = UserFactory.create()
         goal = GoalFactory.create(user=another_user)

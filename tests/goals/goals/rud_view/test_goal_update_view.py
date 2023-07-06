@@ -112,7 +112,8 @@ class TestGoalUpdateView:
             )
             assert response_4.status_code is HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_4.status_code} вместо {HTTP_400_BAD_REQUEST}'
-            assert {'priority', 'status', 'category', 'due_date'} == set(response_4.data.keys()), 'Возвращаются не те ошибки'
+            assert {'priority', 'status', 'category', 'due_date'} == set(response_4.data.keys()), \
+                'Возвращаются не те ошибки'
 
         # Обращение с пустой строкой или None
         data_5_1 = {

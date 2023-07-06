@@ -18,7 +18,7 @@ class TestCommentRetrieveAPIView:
         assert response.data == CommentSerializer(comment).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_category_retrieve_view_errors(self, client, users_comment, user_with_password):
+    def test_comment_retrieve_view_errors(self, client, users_comment, user_with_password):
         comment = users_comment
         not_user_comment = CommentFactory.create()
 

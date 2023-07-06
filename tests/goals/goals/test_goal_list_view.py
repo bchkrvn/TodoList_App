@@ -31,7 +31,7 @@ class TestGoalListView:
         assert len(response.data['results']) == self.COUNT, 'Вернулось не то количество элементов'
 
     @pytest.mark.django_db
-    def test_category_list_view_errors(self, client):
+    def test_goal_list_view_errors(self, client):
         # Неавторизованный пользователь
         response = client.get(
             f'/goals/goal/list',
