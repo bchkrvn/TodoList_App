@@ -15,7 +15,6 @@ class CommentCreateAPIView(CreateAPIView):
 
 
 class CommentListAPIView(ListAPIView):
-    queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
@@ -24,13 +23,14 @@ class CommentListAPIView(ListAPIView):
     ordering = ['-created', '-updated']
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).exclude(goal__status=StatusChoices.archived).select_related('user')
+        return Comment.objects.filter(user=self.request.user).exclude(
+            goal__status=StatusChoices.archived).select_related('user')
 
 
 class CommentRUDAPIView(RetrieveUpdateDestroyAPIView):
-    queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated, IsOwner]
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).exclude(goal__status=StatusChoices.archived).select_related('user')
+        return Comment.objects.filter(user=self.request.user).exclude(
+            goal__status=StatusChoices.archived).select_related('user')

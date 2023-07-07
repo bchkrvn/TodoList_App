@@ -12,7 +12,6 @@ class CategoryCreateAPIView(CreateAPIView):
 
 
 class CategoryListAPIView(ListAPIView):
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
@@ -21,16 +20,15 @@ class CategoryListAPIView(ListAPIView):
     search_fields = ['title']
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user, is_deleted=False).select_related('user')
+        return Category.objects.filter(user=self.request.user, is_deleted=False).select_related('user')
 
 
 class CategoryRUDAPIView(RetrieveUpdateDestroyAPIView):
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user, is_deleted=False).select_related('user')
+        return Category.objects.filter(user=self.request.user, is_deleted=False).select_related('user')
 
     def perform_destroy(self, instance: Category):
         instance.goals.update(status=StatusChoices.archived)

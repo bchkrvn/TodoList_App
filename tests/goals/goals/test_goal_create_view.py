@@ -74,14 +74,12 @@ class TestGoalCreateView:
         # Обращения с пустыми данными
         data_3_1 = {
             'title': '',
-            'description': '',
             'priority': '',
             'status': '',
             'category': '',
         }
         data_3_2 = {
             'title': None,
-            'description': None,
             'priority': None,
             'status': None,
             'category': None,

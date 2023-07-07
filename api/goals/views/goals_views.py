@@ -15,7 +15,6 @@ class GoalCreateAPIView(CreateAPIView):
 
 
 class GoalListAPIView(ListAPIView):
-    queryset = Goal.objects.all()
     serializer_class = GoalSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
@@ -25,16 +24,15 @@ class GoalListAPIView(ListAPIView):
     search_fields = ['title', 'description']
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).exclude(status=StatusChoices.archived).select_related('user')
+        return Goal.objects.filter(user=self.request.user).exclude(status=StatusChoices.archived).select_related('user')
 
 
 class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
-    queryset = Goal.objects.all()
     serializer_class = GoalSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).exclude(status=4).select_related('user')
+        return Goal.objects.filter(user=self.request.user).exclude(status=StatusChoices.archived).select_related('user')
 
     def perform_destroy(self, instance: Goal):
         instance.status = StatusChoices.archived
