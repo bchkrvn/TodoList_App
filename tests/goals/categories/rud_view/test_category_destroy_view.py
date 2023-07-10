@@ -1,7 +1,7 @@
 import pytest
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 from factories import CategoryFactory, GoalFactory
-from goals.models import StatusChoices
+from goals.models import Goal
 
 
 class TestCategoryDestroyView:
@@ -20,7 +20,7 @@ class TestCategoryDestroyView:
         category.refresh_from_db()
         assert category.is_deleted, 'Категория не помечена как удаленная'
         for goal in category.goals.all():
-            assert goal.status == StatusChoices.archived, 'Цель не помечена как в архиве после удаления категории'
+            assert goal.status == Goal.StatusChoices.archived, 'Цель не помечена как в архиве после удаления категории'
 
     @pytest.mark.django_db
     def test_category_destroy_view_errors(self, client, user_with_password):

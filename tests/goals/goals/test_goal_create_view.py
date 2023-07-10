@@ -3,7 +3,7 @@ import datetime
 import pytest
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 
-from goals.models import Goal, StatusChoices, PriorityChoices
+from goals.models import Goal
 from goals.serializers.goals_serializers import GoalCreateSerializer
 from factories import CategoryFactory
 
@@ -18,8 +18,8 @@ class TestGoalCreateView:
             'title': 'Test title',
             'description': 'Test description',
             'due_date': '2023-01-01',
-            'priority': StatusChoices.to_do,
-            'status': PriorityChoices.low,
+            'priority': Goal.StatusChoices.to_do,
+            'status': Goal.PriorityChoices.low,
             'category': category.pk,
         }
         response = client.post(

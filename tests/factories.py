@@ -4,7 +4,7 @@ from factory import Faker, SubFactory
 from factory.django import DjangoModelFactory
 
 from core.models import User
-from goals.models import Category, Goal, Comment, StatusChoices, PriorityChoices
+from goals.models import Category, Goal, Comment
 
 
 class UserFactory(DjangoModelFactory):
@@ -33,8 +33,8 @@ class GoalFactory(DjangoModelFactory):
     description = Faker('sentence', nb_words=10)
     category = SubFactory(CategoryFactory)
     user = SubFactory(UserFactory)
-    priority = PriorityChoices.low
-    status = StatusChoices.to_do
+    priority = Goal.PriorityChoices.low
+    status = Goal.StatusChoices.to_do
     due_date = datetime.date.today()
 
 

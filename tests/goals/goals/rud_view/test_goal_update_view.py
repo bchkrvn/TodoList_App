@@ -4,7 +4,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FO
 
 from goals.serializers.goals_serializers import GoalSerializer
 from factories import CategoryFactory, GoalFactory
-from goals.models import StatusChoices, PriorityChoices
+from goals.models import Goal
 
 
 class TestGoalUpdateView:
@@ -17,8 +17,8 @@ class TestGoalUpdateView:
             'title': 'Test title',
             'description': 'Test description',
             'due_date': '2023-01-01',
-            'priority': StatusChoices.in_progress,
-            'status': PriorityChoices.high,
+            'priority': Goal.StatusChoices.in_progress,
+            'status': Goal.PriorityChoices.high,
             'category': new_category.pk,
         }
         response = client.put(
@@ -50,8 +50,8 @@ class TestGoalUpdateView:
             'title': 'Test title',
             'description': 'Test description',
             'due_date': '2023-01-01',
-            'priority': StatusChoices.in_progress,
-            'status': PriorityChoices.high,
+            'priority': Goal.StatusChoices.in_progress,
+            'status': Goal.PriorityChoices.high,
             'category': goal.category.pk,
         }
         response_1 = client.put(
@@ -75,8 +75,8 @@ class TestGoalUpdateView:
             'title': 'Test title',
             'description': 'Test description',
             'due_date': '2023-01-01',
-            'priority': StatusChoices.in_progress,
-            'status': PriorityChoices.high,
+            'priority': Goal.StatusChoices.in_progress,
+            'status': Goal.PriorityChoices.high,
             'category': not_user_goal.category.pk,
         }
         response_3 = client.put(
@@ -148,8 +148,8 @@ class TestGoalUpdateView:
             'title': 'Test title',
             'description': 'Test description',
             'due_date': '2023-01-01',
-            'priority': StatusChoices.in_progress,
-            'status': PriorityChoices.high,
+            'priority': Goal.StatusChoices.in_progress,
+            'status': Goal.PriorityChoices.high,
             'category': new_category.pk,
         }
         response_6 = client.put(

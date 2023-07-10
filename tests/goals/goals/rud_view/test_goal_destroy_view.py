@@ -2,7 +2,7 @@ import pytest
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
 from factories import GoalFactory
-from goals.models import StatusChoices
+from goals.models import Goal
 
 
 class TestGoalDestroyView:
@@ -18,7 +18,7 @@ class TestGoalDestroyView:
             f'Вернулся код {response.status_code} вместо {HTTP_204_NO_CONTENT}'
 
         goal.refresh_from_db()
-        assert goal.status == StatusChoices.archived, 'Цель не помечена как в архиве'
+        assert goal.status == Goal.StatusChoices.archived, 'Цель не помечена как в архиве'
 
     @pytest.mark.django_db
     def test_goal_destroy_view_errors(self, client, user_with_password):
