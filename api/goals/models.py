@@ -35,6 +35,9 @@ class BoardParticipant(BaseModel):
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.PROTECT, related_name='participants')
     role = models.PositiveSmallIntegerField(verbose_name='role', choices=Role.choices, default=Role.owner)
 
+    def __str__(self):
+        return f'BoardParticipant {self.user}, {self.board}'
+
 
 class Category(BaseModel):
     title = models.CharField(verbose_name='Название', max_length=255)

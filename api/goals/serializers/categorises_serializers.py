@@ -7,7 +7,7 @@ from core.serializers import UserSerializer
 class BaseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('title', 'user', 'id', 'created', 'updated')
+        fields = ('title', 'user', 'id', 'created', 'updated', 'board')
         read_only_fields = ('id', 'created', 'updated')
 
 

@@ -1,7 +1,6 @@
-from django.db import models
-from django_filters import rest_framework, IsoDateTimeFilter
+from django_filters import rest_framework
 
-from .models import Goal, Comment
+from .models import Goal, Comment, Category
 
 
 class GoalFilter(rest_framework.FilterSet):
@@ -14,12 +13,14 @@ class GoalFilter(rest_framework.FilterSet):
             'priority': ('exact', 'in'),
         }
 
-        filter_overrides = {
-            models.DateTimeField: {"filter_class": IsoDateTimeFilter},
-        }
-
 
 class CommentFilter(rest_framework.FilterSet):
     class Meta:
         model = Comment
         fields = ['goal']
+
+
+class CategoryFilter(rest_framework.FilterSet):
+    class Meta:
+        model = Category
+        fields = ['board']
