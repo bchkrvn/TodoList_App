@@ -5,7 +5,7 @@ from rest_framework import filters
 
 from ..serializers.goals_serializers import GoalCreateSerializer, GoalSerializer
 from ..permission import IsOwner
-from ..models import Goal, StatusChoices
+from ..models import Goal
 from ..filters import GoalFilter
 
 
@@ -24,7 +24,8 @@ class GoalListAPIView(ListAPIView):
     search_fields = ['title', 'description']
 
     def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user).exclude(status=StatusChoices.archived).select_related('user')
+        return Goal.objects.filter(user=self.request.user).exclude(status=Goal.StatusChoices.archived).select_related(
+            'user')
 
 
 class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
@@ -32,9 +33,10 @@ class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user).exclude(status=StatusChoices.archived).select_related('user')
+        return Goal.objects.filter(user=self.request.user).exclude(status=Goal.StatusChoices.archived).select_related(
+            'user')
 
     def perform_destroy(self, instance: Goal):
-        instance.status = StatusChoices.archived
+        instance.status = Goal.StatusChoices.archived
         instance.save()
         return instance

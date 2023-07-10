@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from ..models import Comment, StatusChoices
+from ..models import Comment, Goal
 from core.serializers import UserSerializer
 
 
 class BaseCommentSerializer(serializers.ModelSerializer):
 
     def validate_goal(self, goal):
-        if goal.status == StatusChoices.archived:
+        if goal.status == Goal.StatusChoices.archived:
             raise serializers.ValidationError('not allowed in deleted goal')
         if goal.user != self.context['request'].user:
             raise serializers.ValidationError('not owner of goal')

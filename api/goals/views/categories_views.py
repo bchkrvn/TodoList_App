@@ -1,6 +1,6 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
-from goals.models import Category, StatusChoices
+from goals.models import Category
 from goals.permission import IsOwner
 from ..serializers.categorises_serializers import CategoryCreateSerializer, CategorySerializer
 from rest_framework import filters
@@ -31,7 +31,7 @@ class CategoryRUDAPIView(RetrieveUpdateDestroyAPIView):
         return Category.objects.filter(user=self.request.user, is_deleted=False).select_related('user')
 
     def perform_destroy(self, instance: Category):
-        instance.goals.update(status=StatusChoices.archived)
+        instance.goals.update(status=instance.StatusChoices.archived)
         instance.is_deleted = True
         instance.save()
         return instance

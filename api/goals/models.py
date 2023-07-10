@@ -11,10 +11,36 @@ class BaseModel(models.Model):
         abstract = True
 
 
+class Board(BaseModel):
+    title = models.CharField(verbose_name='Название', max_length=255)
+    is_deleted = models.BooleanField(verbose_name='Удалена', default=False)
+
+    class Meta:
+        verbose_name = "Доска"
+        verbose_name_plural = "Доски"
+
+
+class BoardParticipant(BaseModel):
+    class Role(models.IntegerChoices):
+        owner = 1, "Владелец"
+        writer = 2, "Редактор"
+        reader = 3, "Читатель"
+
+    class Meta:
+        unique_together = ("board", "user")
+        verbose_name = "Участник"
+        verbose_name_plural = "Участники"
+
+    board = models.ForeignKey(Board, verbose_name='Доска', on_delete=models.PROTECT, related_name='participants')
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.PROTECT, related_name='participants')
+    role = models.PositiveSmallIntegerField(verbose_name='role', choices=Role.choices, default=Role.owner)
+
+
 class Category(BaseModel):
     title = models.CharField(verbose_name='Название', max_length=255)
     user = models.ForeignKey(User, verbose_name='Автор', on_delete=models.PROTECT, related_name='categories')
     is_deleted = models.BooleanField(verbose_name='Удалена', default=False)
+    board = models.ForeignKey(Board, verbose_name='Доска', on_delete=models.PROTECT, related_name='categories')
 
     class Meta:
         verbose_name = 'Категория'
@@ -24,21 +50,19 @@ class Category(BaseModel):
         return self.title
 
 
-class StatusChoices(models.IntegerChoices):
-    to_do = 1, 'К выполнению'
-    in_progress = 2, 'В процессе'
-    done = 3, 'Выполнена'
-    archived = 4, 'В архиве'
-
-
-class PriorityChoices(models.IntegerChoices):
-    low = 1, 'Низкий'
-    medium = 2, "Средний"
-    high = 3, "Высокий"
-    critical = 4, "Критический"
-
-
 class Goal(BaseModel):
+    class StatusChoices(models.IntegerChoices):
+        to_do = 1, 'К выполнению'
+        in_progress = 2, 'В процессе'
+        done = 3, 'Выполнена'
+        archived = 4, 'В архиве'
+
+    class PriorityChoices(models.IntegerChoices):
+        low = 1, 'Низкий'
+        medium = 2, "Средний"
+        high = 3, "Высокий"
+        critical = 4, "Критический"
+
     title = models.CharField(verbose_name='Название', max_length=255)
     user = models.ForeignKey(User, verbose_name='Автор', on_delete=models.PROTECT, related_name='goals')
     description = models.TextField(verbose_name='Описание', blank=True, null=True)
@@ -61,8 +85,7 @@ class Goal(BaseModel):
 
 
 class Comment(BaseModel):
-    user = models.ForeignKey(User, verbose_name='Автор', related_name='comments',
-                             on_delete=models.PROTECT)
+    user = models.ForeignKey(User, verbose_name='Автор', related_name='comments', on_delete=models.PROTECT)
     goal = models.ForeignKey(Goal, verbose_name='Цель', related_name='comments', on_delete=models.CASCADE)
     text = models.TextField()
 
