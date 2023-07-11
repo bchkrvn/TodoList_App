@@ -5,14 +5,14 @@ from social_django.models import Association, Nonce
 from django.utils.translation import gettext_lazy as _
 
 from .models import User
-from goals.models import Category
+from goals.models import Category, BoardParticipant
 
 
-class CategoryInline(admin.TabularInline):
-    model = Category
-    fields = ('title', 'is_deleted', 'created', 'updated')
-    readonly_fields = ('created', 'updated', 'title')
-    ordering = ('-is_deleted', 'created')
+class BoardInline(admin.TabularInline):
+    model = BoardParticipant
+    fields = ('board', 'role', 'created', 'updated')
+    readonly_fields = ('created', 'updated', 'board')
+    ordering = ('role', 'board', 'created')
     show_change_link = True
     extra = 0
     can_delete = False
@@ -40,7 +40,7 @@ class UserAdmin(UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined", "updated")}),
     )
-    inlines = [CategoryInline]
+    inlines = [BoardInline]
 
 
 admin.site.unregister(Group)

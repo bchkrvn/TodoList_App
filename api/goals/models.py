@@ -19,6 +19,9 @@ class Board(BaseModel):
         verbose_name = "Доска"
         verbose_name_plural = "Доски"
 
+    def __str__(self):
+        return self.title
+
 
 class BoardParticipant(BaseModel):
     class Role(models.IntegerChoices):
