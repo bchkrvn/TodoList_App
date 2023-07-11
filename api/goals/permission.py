@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import BoardParticipant, Category, Goal, Comment
+from .models import BoardParticipant, Category, Goal, Comment, Board
 
 
 class BoardPermissions(BasePermission):
@@ -37,6 +38,9 @@ class CreateCategoryPermissions(BasePermission):
 
     def has_permission(self, request, view):
         board_id = request.data.get('board')
+        if type(board_id) is not int:
+            return False
+
         return BoardParticipant.objects.filter(
             user=request.user, board_id=board_id).exclude(role=BoardParticipant.Role.reader).exists()
 

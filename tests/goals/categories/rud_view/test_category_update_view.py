@@ -27,9 +27,9 @@ class TestCategoryUpdateView:
         assert response.data == CategorySerializer(category).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_category_update_view_errors(self, user_with_password, client):
+    def test_category_update_view_errors(self, user_with_password, client, users_board):
         user, password = user_with_password
-        category = CategoryFactory.create(user=user)
+        category = CategoryFactory.create(user=user, board=users_board)
         not_users_category = CategoryFactory.create()
 
         # Обращение неавторизованного пользователя

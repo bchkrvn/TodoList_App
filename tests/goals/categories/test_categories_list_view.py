@@ -9,10 +9,10 @@ class TestCategoryListView:
     PAGE_SIZE = 5
 
     @pytest.fixture
-    def get_data(self, login_client_with_user):
+    def get_data(self, login_client_with_user, users_board):
         client, user = login_client_with_user
         response_keys = {'count', 'next', 'previous', 'results'}
-        categories = CategoryFactory.create_batch(size=self.COUNT, user=user)
+        categories = CategoryFactory.create_batch(size=self.COUNT, user=user, board=users_board)
         categories.sort(key=lambda c: c.title)
         not_user_categories = CategoryFactory.create_batch(size=self.COUNT)
         return client, response_keys, categories

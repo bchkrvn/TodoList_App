@@ -6,9 +6,9 @@ from goals.models import Goal
 
 class TestCategoryDestroyView:
     @pytest.mark.django_db
-    def test_category_destroy_view(self, login_client_with_user):
+    def test_category_destroy_view(self, login_client_with_user, users_board):
         client, user = login_client_with_user
-        category = CategoryFactory.create(user=user)
+        category = CategoryFactory.create(user=user, board=users_board)
         GoalFactory.create_batch(size=2, category=category)
 
         response = client.delete(
@@ -23,9 +23,9 @@ class TestCategoryDestroyView:
             assert goal.status == Goal.StatusChoices.archived, 'Цель не помечена как в архиве после удаления категории'
 
     @pytest.mark.django_db
-    def test_category_destroy_view_errors(self, client, user_with_password):
+    def test_category_destroy_view_errors(self, client, user_with_password, users_board):
         user, password = user_with_password
-        category = CategoryFactory.create(user=user)
+        category = CategoryFactory.create(user=user, board=users_board)
         not_users_category = CategoryFactory.create()
 
         # Обращение неавторизованного пользователя

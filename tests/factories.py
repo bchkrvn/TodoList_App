@@ -4,7 +4,7 @@ from factory import Faker, SubFactory
 from factory.django import DjangoModelFactory
 
 from core.models import User
-from goals.models import Category, Goal, Comment
+from goals.models import Category, Goal, Comment, Board, BoardParticipant
 
 
 class UserFactory(DjangoModelFactory):
@@ -17,12 +17,29 @@ class UserFactory(DjangoModelFactory):
     username = Faker('name')
 
 
+class BoardFactory(DjangoModelFactory):
+    class Meta:
+        model = Board
+
+    title = Faker('name')
+
+
+class BoardParticipantFactory(DjangoModelFactory):
+    class Meta:
+        model = BoardParticipant
+
+    board = SubFactory(BoardFactory)
+    user = SubFactory(UserFactory)
+    role = BoardParticipant.Role.reader
+
+
 class CategoryFactory(DjangoModelFactory):
     class Meta:
         model = Category
 
     user = SubFactory(UserFactory)
     title = Faker('name')
+    board = SubFactory(BoardFactory)
 
 
 class GoalFactory(DjangoModelFactory):

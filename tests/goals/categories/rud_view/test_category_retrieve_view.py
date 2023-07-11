@@ -18,9 +18,9 @@ class TestCategoryRetrieveAPIView:
         assert response.data == CategorySerializer(category).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_category_retrieve_view_errors(self, client, user_with_password):
+    def test_category_retrieve_view_errors(self, client, user_with_password, users_board):
         user, password = user_with_password
-        category = CategoryFactory.create(user=user)
+        category = CategoryFactory.create(user=user, board=users_board)
         not_users_category = CategoryFactory.create()
 
         # Обращение неавторизованного пользователя

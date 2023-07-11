@@ -36,7 +36,7 @@ class BoardParticipant(BaseModel):
 
     board = models.ForeignKey(Board, verbose_name='Доска', on_delete=models.PROTECT, related_name='participants')
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.PROTECT, related_name='participants')
-    role = models.PositiveSmallIntegerField(verbose_name='role', choices=Role.choices, default=Role.owner)
+    role = models.PositiveSmallIntegerField(verbose_name='role', choices=Role.choices, default=Role.reader)
 
     def __str__(self):
         return f'BoardParticipant {self.user}, {self.board}'

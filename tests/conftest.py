@@ -1,12 +1,15 @@
 import pytest
 from pytest_factoryboy import register
 
+from goals.models import BoardParticipant
 import factories
 
 register(factories.UserFactory)
 register(factories.CategoryFactory)
 register(factories.GoalFactory)
 register(factories.CommentFactory)
+register(factories.BoardFactory)
+register(factories.BoardParticipantFactory)
 
 
 @pytest.fixture
@@ -38,18 +41,26 @@ def login_client_with_user(user_with_password, client):
 
 @pytest.fixture
 @pytest.mark.django_db
-def client_and_category(login_client_with_user):
+def users_board(user_with_password, board):
+    user, password = user_with_password
+    board_owner = factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
+    return board
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def client_and_category(login_client_with_user, users_board):
     client, user = login_client_with_user
-    category = factories.CategoryFactory.create(user=user)
+    category = factories.CategoryFactory.create(user=user, board=users_board)
     not_user_categories = factories.CategoryFactory.create_batch(5)
     return client, category
 
 
 @pytest.fixture
 @pytest.mark.django_db
-def client_and_goal(login_client_with_user):
+def client_and_goal(login_client_with_user, users_board):
     client, user = login_client_with_user
-    category = factories.CategoryFactory.create(user=user)
+    category = factories.CategoryFactory.create(user=user, board=users_board)
     goal = factories.GoalFactory.create(user=user, category=category)
     not_user_goals = factories.GoalFactory.create_batch(5)
     return client, goal
@@ -57,9 +68,9 @@ def client_and_goal(login_client_with_user):
 
 @pytest.fixture
 @pytest.mark.django_db
-def client_and_comment(login_client_with_user):
+def client_and_comment(login_client_with_user, users_board):
     client, user = login_client_with_user
-    category = factories.CategoryFactory.create(user=user)
+    category = factories.CategoryFactory.create(user=user, board=users_board)
     goal = factories.GoalFactory.create(user=user, category=category)
     comment = factories.CommentFactory.create(user=user, goal=goal)
     not_user_comments = factories.CommentFactory.create_batch(5)
@@ -68,9 +79,9 @@ def client_and_comment(login_client_with_user):
 
 @pytest.fixture
 @pytest.mark.django_db
-def users_comment(user_with_password):
+def users_comment(user_with_password, users_board):
     user, password = user_with_password
-    category = factories.CategoryFactory.create(user=user)
+    category = factories.CategoryFactory.create(user=user, board=users_board)
     goal = factories.GoalFactory.create(user=user, category=category)
     comment = factories.CommentFactory.create(user=user, goal=goal)
     return comment
