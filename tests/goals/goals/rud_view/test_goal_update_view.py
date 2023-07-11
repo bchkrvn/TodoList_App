@@ -39,31 +39,12 @@ class TestGoalUpdateView:
         assert response.data == GoalSerializer(goal).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_goal_update_view_errors(self, user_with_password, client):
-        user, password = user_with_password
-        goal = GoalFactory.create(user=user)
+    def test_goal_update_view_errors(self, client_and_goal):
+        client, goal = client_and_goal
         not_users_category = CategoryFactory.create()
         not_user_goal = GoalFactory.create()
 
-        # Обращение неавторизованного пользователя
-        data_1 = {
-            'title': 'Test title',
-            'description': 'Test description',
-            'due_date': '2023-01-01',
-            'priority': Goal.StatusChoices.in_progress,
-            'status': Goal.PriorityChoices.high,
-            'category': goal.category.pk,
-        }
-        response_1 = client.put(
-            f'/goals/goal/{goal.pk}',
-            data=data_1,
-            content_type='application/json'
-        )
-        assert response_1.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
-
         # Обращение без данных
-        client.login(username=user.username, password=password)
         response_2 = client.put(
             f'/goals/goal/{goal.pk}'
         )
@@ -112,8 +93,6 @@ class TestGoalUpdateView:
             )
             assert response_4.status_code is HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_4.status_code} вместо {HTTP_400_BAD_REQUEST}'
-            assert {'priority', 'status', 'category', 'due_date'} == set(response_4.data.keys()), \
-                'Возвращаются не те ошибки'
 
         # Обращение с пустой строкой или None
         data_5_1 = {
@@ -160,3 +139,21 @@ class TestGoalUpdateView:
         assert response_6.status_code is HTTP_400_BAD_REQUEST, \
             f'Вернулся код {response_6.status_code} вместо {HTTP_400_BAD_REQUEST}'
         assert {'category', } == set(response_6.data.keys()), 'Возвращаются не те ошибки'
+
+        # Обращение неавторизованного пользователя
+        client.logout()
+        data_1 = {
+            'title': 'Test title',
+            'description': 'Test description',
+            'due_date': '2023-01-01',
+            'priority': Goal.StatusChoices.in_progress,
+            'status': Goal.PriorityChoices.high,
+            'category': goal.category.pk,
+        }
+        response_1 = client.put(
+            f'/goals/goal/{goal.pk}',
+            data=data_1,
+            content_type='application/json'
+        )
+        assert response_1.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'

@@ -48,8 +48,8 @@ class TestCategoryCreateView:
         response_2 = client.post(
             '/goals/goal_category/create',
         )
-        assert response_2.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
+        assert response_2.status_code == HTTP_400_BAD_REQUEST, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_400_BAD_REQUEST}'
 
         # Обращение с пустой строкой
         data_3 = {
@@ -61,5 +61,5 @@ class TestCategoryCreateView:
             data=data_3,
             content_type='application/json'
         )
-        assert response_3.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_3.status_code} вместо {HTTP_403_FORBIDDEN}'
+        assert response_3.status_code == HTTP_400_BAD_REQUEST, \
+            f'Вернулся код {response_3.status_code} вместо {HTTP_400_BAD_REQUEST}'

@@ -1,7 +1,7 @@
+from django.core.exceptions import BadRequest
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import BoardParticipant, Category, Goal, Comment, Board
+from .models import BoardParticipant, Category, Goal, Comment
 
 
 class BoardPermissions(BasePermission):
@@ -39,7 +39,7 @@ class CreateCategoryPermissions(BasePermission):
     def has_permission(self, request, view):
         board_id = request.data.get('board')
         if type(board_id) is not int:
-            return False
+            raise BadRequest({'goal': 'Wrong board id'})
 
         return BoardParticipant.objects.filter(
             user=request.user, board_id=board_id).exclude(role=BoardParticipant.Role.reader).exists()
@@ -64,6 +64,10 @@ class CreateGoalPermissions(BasePermission):
 
     def has_permission(self, request, view):
         category_id = request.data.get('category')
+
+        if type(category_id) is not int:
+            raise BadRequest({'goal': 'Wrong category id'})
+
         return BoardParticipant.objects.filter(
             user=request.user, board__categories__id=category_id).exclude(role=BoardParticipant.Role.reader).exists()
 
@@ -88,6 +92,9 @@ class CreateCommentPermissions(BasePermission):
 
     def has_permission(self, request, view):
         goal_id = request.data.get('goal')
+        if type(goal_id) is not int:
+            raise BadRequest({'goal': 'Wrong goal id'})
+
         goal = get_object_or_404(Goal, id=goal_id)
         return BoardParticipant.objects.filter(
             user=request.user, board=goal.category.board).exists()

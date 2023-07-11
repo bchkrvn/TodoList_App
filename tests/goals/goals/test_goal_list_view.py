@@ -8,10 +8,10 @@ class TestGoalListView:
     LIMIT = 300
 
     @pytest.fixture
-    def get_data(self, login_client_with_user):
+    def get_data(self, login_client_with_user, users_board):
         client, user = login_client_with_user
         response_keys = {'count', 'next', 'previous', 'results'}
-        category = CategoryFactory.create(user=user)
+        category = CategoryFactory.create(user=user, board=users_board)
         goals = GoalFactory.create_batch(category=category, user=user, size=self.COUNT)
         not_user_category = CategoryFactory.create()
         not_user_goals = GoalFactory.create_batch(category=not_user_category, size=self.COUNT)

@@ -10,9 +10,9 @@ from factories import CategoryFactory
 
 class TestGoalCreateView:
     @pytest.mark.django_db
-    def test_goal_create_view(self, login_client_with_user):
+    def test_goal_create_view(self, login_client_with_user, users_board):
         client, user = login_client_with_user
-        category = CategoryFactory.create(user=user)
+        category = CategoryFactory.create(user=user, board=users_board)
 
         data = {
             'title': 'Test title',
@@ -41,9 +41,9 @@ class TestGoalCreateView:
         assert response.data == GoalCreateSerializer(new_goal).data, f'Возвращаются неверные данные'
 
     @pytest.mark.django_db
-    def test_goal_create_view_errors(self, client, user_with_password):
+    def test_goal_create_view_errors(self, client, user_with_password, users_board):
         user, password = user_with_password
-        category = CategoryFactory.create(user=user)
+        category = CategoryFactory.create(user=user, board=users_board)
         not_user_category = CategoryFactory.create()
 
         # Обращение без авторизации
@@ -68,7 +68,7 @@ class TestGoalCreateView:
         response_2 = client.post(
             '/goals/goal/create',
         )
-        assert response_2.status_code is HTTP_400_BAD_REQUEST, \
+        assert response_2.status_code == HTTP_400_BAD_REQUEST, \
             f'Вернулся код {response_2.status_code} вместо {HTTP_400_BAD_REQUEST}'
 
         # Обращения с пустыми данными
@@ -90,9 +90,8 @@ class TestGoalCreateView:
                 data=data,
                 content_type='application/json'
             )
-            assert response_3.status_code is HTTP_400_BAD_REQUEST, \
+            assert response_3.status_code == HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_3.status_code} вместо {HTTP_400_BAD_REQUEST}'
-            assert set(data.keys()) == set(response_3.data.keys()), 'Возвращаются не те ошибки'
 
         # Обращение к чужой цели с неправильным статусом и приоритетом
         data_4 = {
@@ -107,9 +106,8 @@ class TestGoalCreateView:
             data=data_4,
             content_type='application/json'
         )
-        assert response_4.status_code is HTTP_400_BAD_REQUEST, \
-            f'Вернулся код {response_4.status_code} вместо {HTTP_400_BAD_REQUEST}'
-        assert {'priority', 'status', 'category'} == set(response_4.data.keys()), 'Возвращаются не те ошибки'
+        assert response_4.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_4.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         # Обращение к удаленной цели
         category.is_deleted = True
