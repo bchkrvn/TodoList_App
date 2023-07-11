@@ -4,14 +4,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
 
 from ..serializers.goals_serializers import GoalCreateSerializer, GoalSerializer
-from ..permission import IsOwner
 from ..models import Goal
 from ..filters import GoalFilter
+from ..permission import GoalPermissions, CreateGoalPermissions
 
 
 class GoalCreateAPIView(CreateAPIView):
     serializer_class = GoalCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, CreateGoalPermissions]
 
 
 class GoalListAPIView(ListAPIView):
@@ -24,17 +24,17 @@ class GoalListAPIView(ListAPIView):
     search_fields = ['title', 'description']
 
     def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user).exclude(status=Goal.StatusChoices.archived).select_related(
-            'user')
+        return Goal.objects.filter(category__board__participants__user=self.request.user).exclude(
+            status=Goal.StatusChoices.archived).select_related('user')
 
 
 class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = GoalSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, GoalPermissions]
 
     def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user).exclude(status=Goal.StatusChoices.archived).select_related(
-            'user')
+        return Goal.objects.filter(category__board__participants__user=self.request.user).exclude(
+            status=Goal.StatusChoices.archived).select_related('user')
 
     def perform_destroy(self, instance: Goal):
         instance.status = Goal.StatusChoices.archived

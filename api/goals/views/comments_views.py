@@ -6,7 +6,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from ..serializers.comments_serializers import CommentSerializer, CommentCreateSerializer
 from ..filters import CommentFilter
 from ..models import Comment, Goal
-from ..permission import IsOwner
 
 
 class CommentCreateAPIView(CreateAPIView):
@@ -28,7 +27,7 @@ class CommentListAPIView(ListAPIView):
 
 
 class CommentRUDAPIView(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
 
     def get_queryset(self):

@@ -1,17 +1,9 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import BoardParticipant, Category
-
-
-class IsOwner(BasePermission):
-    message = 'You are not the owner'
-
-    def has_object_permission(self, request, view, obj):
-        if obj.user == request.user:
-            return True
+from .models import BoardParticipant, Category, Goal
 
 
 class BoardPermissions(BasePermission):
-    message = 'You don\'t have permission to edit this board'
+    message = "You don't have permission to edit this board"
 
     def has_object_permission(self, request, view, obj):
         if not request.user.is_authenticated:
@@ -26,7 +18,7 @@ class BoardPermissions(BasePermission):
 
 
 class CategoryPermissions(BasePermission):
-    message = 'You don\'t have permission to edit this category'
+    message = "You don't have permission to edit this category"
 
     def has_object_permission(self, request, view, obj: Category):
         if not request.user.is_authenticated:
@@ -40,9 +32,32 @@ class CategoryPermissions(BasePermission):
 
 
 class CreateCategoryPermissions(BasePermission):
-    message = 'You don\'t have permission to create this category'
+    message = "You don't have permission to create this category"
 
     def has_permission(self, request, view):
         board_id = request.data.get('board')
         return BoardParticipant.objects.filter(
             user=request.user, board_id=board_id).exclude(role=BoardParticipant.Role.reader).exists()
+
+
+class GoalPermissions(BasePermission):
+    message = "You don't have permission to edit this goal"
+
+    def has_object_permission(self, request, view, obj: Goal):
+        if not request.user.is_authenticated:
+            return False
+
+        if request.method in SAFE_METHODS:
+            return BoardParticipant.objects.filter(user=request.user, board=obj.category.board).exists()
+
+        return BoardParticipant.objects.filter(
+            user=request.user, board=obj.category.board).exclude(role=BoardParticipant.Role.reader).exists()
+
+
+class CreateGoalPermissions(BasePermission):
+    message = "You don't have permission to create this goal"
+
+    def has_permission(self, request, view):
+        category_id = request.data.get('category')
+        return BoardParticipant.objects.filter(
+            user=request.user, board__categories__id=category_id).exclude(role=BoardParticipant.Role.reader).exists()

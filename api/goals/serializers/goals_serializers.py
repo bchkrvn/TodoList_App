@@ -10,8 +10,6 @@ class BaseGoalSerializer(serializers.ModelSerializer):
         read_only_fields = ['created', 'updated']
 
     def validate_category(self, category):
-        if category.user != self.context['request'].user:
-            raise serializers.ValidationError("It isn't your category")
         if category.is_deleted:
             raise serializers.ValidationError('This category is deleted')
         return category
