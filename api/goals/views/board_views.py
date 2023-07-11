@@ -27,13 +27,14 @@ class BoardRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, BoardPermissions]
 
     def get_queryset(self):
-        return Board.objects.filter(participants__user=self.request.user, is_deleted=False)
+        return Board.objects.filter(participants__user=self.request.user, is_deleted=False).prefetch_related(
+            'participants')
 
     def perform_destroy(self, instance: Board):
         with transaction.atomic():
             instance.is_deleted = True
             instance.save()
-            instance.categories.update(id_deleted=True)
+            instance.categories.update(is_deleted=True)
             Goal.objects.filter(category__board=instance).update(status=Goal.StatusChoices.archived)
 
         return instance

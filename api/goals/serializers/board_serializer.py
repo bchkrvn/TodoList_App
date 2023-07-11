@@ -74,6 +74,8 @@ class BoardSerializer(serializers.ModelSerializer):
                                                                  role=new_participant['role']))
             if new_participants_objects:
                 BoardParticipant.objects.bulk_create(new_participants_objects)
+
             instance.title = validated_data['title']
+            instance.save()
 
         return instance

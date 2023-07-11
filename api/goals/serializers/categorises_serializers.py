@@ -17,3 +17,4 @@ class CategoryCreateSerializer(BaseCategorySerializer):
 
 class CategorySerializer(BaseCategorySerializer):
     user = UserSerializer(read_only=True)
+    board = serializers.PrimaryKeyRelatedField(read_only=True)
