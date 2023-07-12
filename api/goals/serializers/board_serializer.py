@@ -50,22 +50,25 @@ class BoardSerializer(serializers.ModelSerializer):
         participants_data = validated_data.pop('participants')
         old_participants = instance.participants.exclude(user=owner)
         new_participants = {new_participant['user'].id: new_participant for new_participant in participants_data}
+        updated_old_participants = []
+        deleted_old_participants_ids = []
 
         with transaction.atomic():
-            updated_old_participants = []
-            deleted_old_participants_ids = []
 
             for old_participant in old_participants:
                 if old_participant.user_id not in new_participants:
                     deleted_old_participants_ids.append(old_participant.user_id)
                 else:
-                    old_participant.role = new_participants[old_participant.user_id]['role']
-                    updated_old_participants.append(old_participant)
+                    if old_participant.role != new_participants[old_participant.user_id]['role']:
+                        old_participant.role = new_participants[old_participant.user_id]['role']
+                        updated_old_participants.append(old_participant)
                     del new_participants[old_participant.user_id]
 
             if deleted_old_participants_ids:
                 BoardParticipant.objects.filter(user_id__in=deleted_old_participants_ids).delete()
-            BoardParticipant.objects.bulk_update(updated_old_participants, ['role'])
+
+            if updated_old_participants:
+                BoardParticipant.objects.bulk_update(updated_old_participants, ['role'])
 
             new_participants_objects = []
             for new_participant in new_participants.values():

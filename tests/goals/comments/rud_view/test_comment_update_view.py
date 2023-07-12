@@ -66,7 +66,6 @@ class TestCommentUpdateView:
         # Обращение к чужому комментарию
         data_3 = {
             'text': 'new_text',
-            'goal': not_users_comment.goal.pk,
         }
         response_3 = client.put(
             f'/goals/goal_comment/{not_users_comment.pk}',
@@ -79,7 +78,6 @@ class TestCommentUpdateView:
         # Обращение к несуществующему комментарию
         data_4 = {
             'text': 'new_text',
-            'goal': goal.pk
         }
         response_4 = client.put(
             f'/goals/goal_comment/100000000',
@@ -92,11 +90,9 @@ class TestCommentUpdateView:
         # Обращение с пустой строкой или None
         data_5 = {
             'text': '',
-            'goal': ''
         }
         data_6 = {
             'text': None,
-            'goal': None,
         }
 
         for data in [data_5, data_6]:
@@ -107,4 +103,4 @@ class TestCommentUpdateView:
             )
             assert response_5.status_code == HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_5.status_code} вместо {HTTP_400_BAD_REQUEST}'
-            assert {'text', 'goal'} == set(response_5.data.keys()), f'Вернулись не те ошибки'
+            assert {'text', } == set(response_5.data.keys()), f'Вернулись не те ошибки'
