@@ -10,16 +10,15 @@ class TestGoalListView:
     @pytest.fixture
     def get_data(self, login_client_with_user, users_board):
         client, user = login_client_with_user
-        response_keys = {'count', 'next', 'previous', 'results'}
         category = CategoryFactory.create(user=user, board=users_board)
         goals = GoalFactory.create_batch(category=category, user=user, size=self.COUNT)
         not_user_category = CategoryFactory.create()
         not_user_goals = GoalFactory.create_batch(category=not_user_category, size=self.COUNT)
-        return client, response_keys, category, goals
+        return client, goals
 
     @pytest.mark.django_db
-    def test_goal_list_view(self, get_data):
-        client, response_keys, category, goals = get_data
+    def test_goal_list_view(self, get_data, response_keys):
+        client, goals = get_data
         response = client.get(
             f'/goals/goal/list',
             {"limit": self.LIMIT}

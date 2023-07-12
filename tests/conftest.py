@@ -18,6 +18,11 @@ def password():
 
 
 @pytest.fixture
+def response_keys():
+    return {'count', 'next', 'previous', 'results'}
+
+
+@pytest.fixture
 def simple_password():
     return '1111'
 

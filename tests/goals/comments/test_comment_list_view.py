@@ -11,10 +11,6 @@ class TestCommentListView:
     PAGE_SIZE = 5
 
     @pytest.fixture
-    def response_keys(self):
-        return {'count', 'next', 'previous', 'results'}
-
-    @pytest.fixture
     @pytest.mark.django_db
     def get_data(self, login_client_with_user):
         client, user = login_client_with_user
@@ -72,7 +68,7 @@ class TestCommentListView:
         response = client.get(
             f'/goals/goal_comment/list',
             {"limit": self.PAGE_SIZE,
-             'offset': self.PAGE_SIZE * (self.COUNT % self.PAGE_SIZE),
+             'offset': self.PAGE_SIZE * (self.COUNT // self.PAGE_SIZE),
              'goal': goal.pk}
         )
         assert response.status_code is HTTP_200_OK, \
