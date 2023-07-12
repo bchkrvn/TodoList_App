@@ -32,9 +32,15 @@ class TestCommentDestroyView:
 
         # Обращение к чужому и несуществующему комментарию
         client.login(username=user.username, password=password)
-        for pk in [not_users_comment.pk, 10000000000]:
-            response_2 = client.delete(
-                f'/goals/goal_comment/{pk}',
-            )
-            assert response_2.status_code is HTTP_404_NOT_FOUND, \
-                f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+
+        response_2 = client.delete(
+            f'/goals/goal_comment/{not_users_comment.pk}',
+        )
+        assert response_2.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
+
+        response_3 = client.delete(
+            f'/goals/goal_comment/{10000000000}',
+        )
+        assert response_3.status_code is HTTP_404_NOT_FOUND, \
+            f'Вернулся код {response_3.status_code} вместо {HTTP_404_NOT_FOUND}'

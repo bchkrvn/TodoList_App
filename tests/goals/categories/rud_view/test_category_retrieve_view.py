@@ -35,8 +35,8 @@ class TestCategoryRetrieveAPIView:
         response_2 = client.get(
             f'/goals/goal_category/{not_users_category.pk}'
         )
-        assert response_2.status_code is HTTP_404_NOT_FOUND, \
-            f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+        assert response_2.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         # Обращение к несуществующей категории
         response_3 = client.get(

@@ -32,5 +32,4 @@ class CommentRUDAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return Comment.objects.filter(goal__category__board__participants__user=self.request.user).exclude(
-            goal__status=Goal.StatusChoices.archived).select_related('user')
+        return Comment.objects.exclude(goal__status=Goal.StatusChoices.archived).select_related('user')

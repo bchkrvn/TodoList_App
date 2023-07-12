@@ -1,5 +1,4 @@
 from django.core.exceptions import BadRequest
-from django.shortcuts import get_object_or_404
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from .models import BoardParticipant, Category, Goal, Comment
 

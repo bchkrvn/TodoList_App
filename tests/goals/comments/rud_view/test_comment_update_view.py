@@ -73,8 +73,8 @@ class TestCommentUpdateView:
             data=data_3,
             content_type='application/json'
         )
-        assert response_3.status_code == HTTP_404_NOT_FOUND, \
-            f'Вернулся код {response_3.status_code} вместо {HTTP_404_NOT_FOUND}'
+        assert response_3.status_code == HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_3.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         # Обращение к несуществующему комментарию
         data_4 = {

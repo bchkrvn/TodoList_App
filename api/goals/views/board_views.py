@@ -27,7 +27,7 @@ class BoardRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, BoardPermissions]
 
     def get_queryset(self):
-        return Board.objects.filter(participants__user=self.request.user, is_deleted=False).prefetch_related(
+        return Board.objects.filter(is_deleted=False).prefetch_related(
             'participants')
 
     def perform_destroy(self, instance: Board):

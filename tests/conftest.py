@@ -47,9 +47,17 @@ def login_client_with_user(user_with_password, client):
 @pytest.fixture
 @pytest.mark.django_db
 def users_board(user_with_password, board):
-    user, password = user_with_password
+    user, _ = user_with_password
     board_owner = factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
     return board
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def client_and_board(login_client_with_user, board):
+    client, user = login_client_with_user
+    board_owner = factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
+    return client, board
 
 
 @pytest.fixture
@@ -90,3 +98,32 @@ def users_comment(user_with_password, users_board):
     goal = factories.GoalFactory.create(user=user, category=category)
     comment = factories.CommentFactory.create(user=user, goal=goal)
     return comment
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def boards_owner_writer_reader_alien():
+    general_board = factories.BoardFactory.create()
+    owner, writer, reader, alien = factories.UserFactory.create_batch(size=4)
+
+    factories.BoardParticipantFactory.create(user=owner, board=general_board, role=BoardParticipant.Role.owner)
+    factories.BoardParticipantFactory.create(user=writer, board=general_board, role=BoardParticipant.Role.writer)
+    factories.BoardParticipantFactory.create(user=reader, board=general_board, role=BoardParticipant.Role.reader)
+
+    personal_board = factories.BoardFactory.create()
+    factories.BoardParticipantFactory.create(user=owner, board=personal_board, role=BoardParticipant.Role.owner)
+
+    return general_board, personal_board, owner, writer, reader, alien
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def one_board_owner_writer_reader_alien():
+    board = factories.BoardFactory.create()
+    owner, writer, reader, alien = factories.UserFactory.create_batch(size=4)
+
+    factories.BoardParticipantFactory.create(user=owner, board=board, role=BoardParticipant.Role.owner)
+    factories.BoardParticipantFactory.create(user=writer, board=board, role=BoardParticipant.Role.writer)
+    factories.BoardParticipantFactory.create(user=reader, board=board, role=BoardParticipant.Role.reader)
+
+    return board, owner, writer, reader, alien

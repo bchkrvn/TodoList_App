@@ -32,9 +32,15 @@ class TestGoalRetrieveAPIView:
 
         # Обращение не к своей цели или к несуществующей цели
         client.login(username=user.username, password=password)
-        for g_id in [not_users_goal.pk, 1000000000]:
-            response_2 = client.get(
-                f'/goals/goal/{g_id}'
-            )
-            assert response_2.status_code is HTTP_404_NOT_FOUND, \
-                f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+
+        response_2 = client.get(
+            f'/goals/goal/{not_users_goal.pk}'
+        )
+        assert response_2.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
+
+        response_2 = client.get(
+            f'/goals/goal/{1000000000}'
+        )
+        assert response_2.status_code is HTTP_404_NOT_FOUND, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'

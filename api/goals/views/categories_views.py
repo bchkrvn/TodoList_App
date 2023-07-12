@@ -32,7 +32,7 @@ class CategoryRUDAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, CategoryPermissions]
 
     def get_queryset(self):
-        return Category.objects.filter(board__participants__user=self.request.user, is_deleted=False).select_related('user')
+        return Category.objects.filter(is_deleted=False).select_related('user')
 
     def perform_destroy(self, instance: Category):
         instance.goals.update(status=Goal.StatusChoices.archived)

@@ -1,20 +1,21 @@
 import pytest
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
-from goals.serializers.categorises_serializers import CategorySerializer
-from factories import CategoryFactory
+from goals.serializers.board_serializer import BoardSerializer
+from factories import BoardFactory
 
 
-class TestCategoryUpdateView:
+class TestBoardUpdateView:
     @pytest.mark.django_db
-    def test_category_update_view(self, client_and_category):
-        client, category = client_and_category
+    def test_board_update_view(self, client_and_board):
+        client, board = client_and_board
 
         data = {
-            'title': 'new_title'
+            'title': 'new_title',
+            'participants': [],
         }
         response = client.put(
-            f'/goals/goal_category/{category.pk}',
+            f'/goals/board/{board.pk}',
             data=data,
             content_type='application/json'
         )
@@ -22,54 +23,42 @@ class TestCategoryUpdateView:
             f'Вернулся код {response.status_code} вместо {HTTP_200_OK}'
         assert response.data['title'] == data['title'], 'Название не обновилось'
         assert response.data['updated'] != response.data['created'], 'Время обновления не установилось'
-        category.refresh_from_db()
-        assert category.updated > category.created, 'Время обновления раньше времени создания'
-        assert response.data == CategorySerializer(category).data, 'Вернулись неверные данные'
+        board.refresh_from_db()
+        assert board.updated > board.created, 'Время обновления раньше времени создания'
+        assert response.data == BoardSerializer(board).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_category_update_view_errors(self, user_with_password, client, users_board):
-        user, password = user_with_password
-        category = CategoryFactory.create(user=user, board=users_board)
-        not_users_category = CategoryFactory.create()
-
-        # Обращение неавторизованного пользователя
-        data_1 = {
-            'title': 'new_title'
-        }
-        response_1 = client.put(
-            f'/goals/goal_category/{category.pk}',
-            data=data_1,
-            content_type='application/json'
-        )
-        assert response_1.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
+    def test_category_update_view_errors(self, client_and_board):
+        client, board = client_and_board
+        not_users_board = BoardFactory.create()
 
         # Обращение без данных
-        client.login(username=user.username, password=password)
         response_2 = client.put(
-            f'/goals/goal_category/{category.pk}'
+            f'/goals/board/{board.pk}'
         )
         assert response_2.status_code is HTTP_400_BAD_REQUEST, \
             f'Вернулся код {response_2.status_code} вместо {HTTP_400_BAD_REQUEST}'
 
-        # Обращение не к своей категории
+        # Обращение не к своей доске
         data_3 = {
-            'title': 'new_title'
+            'title': 'new_title',
+            'participants': [],
         }
         response_3 = client.put(
-            f'/goals/goal_category/{not_users_category.pk}',
+            f'/goals/board/{not_users_board.pk}',
             data=data_3,
             content_type='application/json'
         )
         assert response_3.status_code is HTTP_403_FORBIDDEN, \
             f'Вернулся код {response_3.status_code} вместо {HTTP_403_FORBIDDEN}'
 
-        # Обращение к несуществующей категории
+        # Обращение к несуществующей доске
         data_4 = {
-            'title': 'new_title'
+            'title': 'new_title',
+            'participants': [],
         }
         response_4 = client.put(
-            f'/goals/goal_category/100000000',
+            f'/goals/board/100000000',
             data=data_4,
             content_type='application/json'
         )
@@ -78,7 +67,8 @@ class TestCategoryUpdateView:
 
         # Обращение с пустой строкой или None
         data_5 = {
-            'title': ''
+            'title': '',
+            'participants': [],
         }
         data_6 = {
             'title': None
@@ -86,9 +76,23 @@ class TestCategoryUpdateView:
 
         for data in [data_5, data_6]:
             response_5 = client.put(
-                f'/goals/goal_category/{category.pk}',
+                f'/goals/board/{board.pk}',
                 data=data,
                 content_type='application/json'
             )
             assert response_5.status_code is HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_5.status_code} вместо {HTTP_400_BAD_REQUEST}'
+
+        # Обращение неавторизованного пользователя
+        client.logout()
+        data_1 = {
+            'title': 'new_title',
+            'participants': [],
+        }
+        response_1 = client.put(
+            f'/goals/board/{board.pk}',
+            data=data_1,
+            content_type='application/json'
+        )
+        assert response_1.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'

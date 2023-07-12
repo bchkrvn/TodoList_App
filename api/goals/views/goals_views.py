@@ -33,8 +33,7 @@ class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, GoalPermissions]
 
     def get_queryset(self):
-        return Goal.objects.filter(category__board__participants__user=self.request.user).exclude(
-            status=Goal.StatusChoices.archived).select_related('user')
+        return Goal.objects.exclude(status=Goal.StatusChoices.archived).select_related('user')
 
     def perform_destroy(self, instance: Goal):
         instance.status = Goal.StatusChoices.archived

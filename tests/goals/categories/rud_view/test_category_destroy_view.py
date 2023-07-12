@@ -37,9 +37,13 @@ class TestCategoryDestroyView:
 
         # Обращение к чужой и несуществующей категории
         client.login(username=user.username, password=password)
-        for pk in [not_users_category.pk, 10000000000]:
-            response_2 = client.delete(
-                f'/goals/goal_category/{pk}',
-            )
-            assert response_2.status_code is HTTP_404_NOT_FOUND, \
-                f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+        response_2 = client.delete(
+            f'/goals/goal_category/{not_users_category.pk}',
+        )
+        assert response_2.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
+        response_2 = client.delete(
+            f'/goals/goal_category/{10000000000}',
+        )
+        assert response_2.status_code is HTTP_404_NOT_FOUND, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
