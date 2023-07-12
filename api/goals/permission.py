@@ -73,7 +73,7 @@ class CreateGoalPermissions(BasePermission):
 
 
 class CommentPermissions(BasePermission):
-    message = "You don't have permission to edit this goal"
+    message = "You don't have permission to edit this comment"
 
     def has_object_permission(self, request, view, obj: Comment):
         if not request.user.is_authenticated:
@@ -88,13 +88,16 @@ class CommentPermissions(BasePermission):
 
 
 class CreateCommentPermissions(BasePermission):
-    message = "You don't have permission to create this goal"
+    message = "You don't have permission to create this comment"
 
     def has_permission(self, request, view):
-        goal_id = request.data.get('goal')
-        if type(goal_id) is not int:
+        goal_id = request.data.get('goal', '')
+        try:
+            goal = Goal.objects.get(id=goal_id)
+        except Goal.DoesNotExist:
+            return False
+        except (TypeError, ValueError):
             raise BadRequest({'goal': 'Wrong goal id'})
 
-        goal = get_object_or_404(Goal, id=goal_id)
         return BoardParticipant.objects.filter(
             user=request.user, board=goal.category.board).exists()

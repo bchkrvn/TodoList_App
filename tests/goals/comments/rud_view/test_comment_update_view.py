@@ -11,6 +11,7 @@ class TestCommentUpdateView:
         client, comment = client_and_comment
         goal = comment.goal
         category = goal.category
+        board = category.board
 
         data = {
             'text': 'new_text',
@@ -25,11 +26,13 @@ class TestCommentUpdateView:
             f'Вернулся код {response.status_code} вместо {HTTP_200_OK}'
         assert response.data['text'] == data['text'], 'Текст не обновилось'
         assert response.data['updated'] != response.data['created'], 'Время обновления не установилось'
+
         comment.refresh_from_db()
         assert comment.updated > comment.created, 'Время обновления раньше времени создания'
         assert response.data == CommentSerializer(comment).data, 'Вернулись неверные данные'
         assert comment.goal == goal, 'Обновилась цель'
         assert comment.goal.category == category, 'Обновилась категория'
+        assert comment.goal.category.board == board, 'Обновилась доска'
 
     @pytest.mark.django_db
     def test_comment_update_view_errors(self, client, users_comment, user_with_password):
@@ -57,7 +60,7 @@ class TestCommentUpdateView:
         response_2 = client.put(
             f'/goals/goal_comment/{comment.pk}'
         )
-        assert response_2.status_code is HTTP_400_BAD_REQUEST, \
+        assert response_2.status_code == HTTP_400_BAD_REQUEST, \
             f'Вернулся код {response_2.status_code} вместо {HTTP_400_BAD_REQUEST}'
 
         # Обращение к чужому комментарию
@@ -70,7 +73,7 @@ class TestCommentUpdateView:
             data=data_3,
             content_type='application/json'
         )
-        assert response_3.status_code is HTTP_404_NOT_FOUND, \
+        assert response_3.status_code == HTTP_404_NOT_FOUND, \
             f'Вернулся код {response_3.status_code} вместо {HTTP_404_NOT_FOUND}'
 
         # Обращение к несуществующему комментарию
@@ -102,6 +105,6 @@ class TestCommentUpdateView:
                 data=data,
                 content_type='application/json'
             )
-            assert response_5.status_code is HTTP_400_BAD_REQUEST, \
+            assert response_5.status_code == HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_5.status_code} вместо {HTTP_400_BAD_REQUEST}'
             assert {'text', 'goal'} == set(response_5.data.keys()), f'Вернулись не те ошибки'

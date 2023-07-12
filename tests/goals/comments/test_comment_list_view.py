@@ -1,7 +1,8 @@
 import pytest
-from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
-from factories import CommentFactory, CategoryFactory, GoalFactory, UserFactory
+from factories import CommentFactory, CategoryFactory, GoalFactory, UserFactory, BoardFactory, BoardParticipant, \
+    BoardParticipantFactory
 from goals.serializers.comments_serializers import CommentSerializer
 
 
@@ -17,7 +18,9 @@ class TestCommentListView:
     @pytest.mark.django_db
     def get_data(self, login_client_with_user):
         client, user = login_client_with_user
-        category = CategoryFactory.create(user=user)
+        board = BoardFactory()
+        owner_board = BoardParticipantFactory(board=board, user=user, role=BoardParticipant.Role.owner)
+        category = CategoryFactory.create(user=user, board=board)
         goal = GoalFactory.create(user=user, category=category)
         comments = CommentFactory.create_batch(size=self.COUNT, user=user, goal=goal)
         not_users_comments = CommentFactory.create_batch(size=self.COUNT)
@@ -148,4 +151,3 @@ class TestCommentListView:
             f'Вернулся код  {response_2.status_code} вместо {HTTP_200_OK}'
         assert response_2.data['count'] == 0, 'Неверное количество записей'
         assert not response_2.data['results'], 'Не пустой список'
-
