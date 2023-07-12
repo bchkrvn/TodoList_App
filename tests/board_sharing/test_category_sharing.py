@@ -1,6 +1,5 @@
 import pytest
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_403_FORBIDDEN, \
-    HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_403_FORBIDDEN
 
 from goals.serializers.categorises_serializers import CategorySerializer
 
@@ -12,8 +11,6 @@ class TestCategorySharing:
     PAGE = 10
     ALIEN_INDEX = 0
     READER_INDEX = 1
-    WRITER_INDEX = 2
-    OWNER_INDEX = 3
 
     @pytest.mark.django_db
     def test_categories_sharing(self, client, one_board_owner_writer_reader_alien):
@@ -62,10 +59,10 @@ class TestCategorySharing:
             else:
                 assert response.status_code is HTTP_201_CREATED, \
                     f'Вернулся код {response.status_code} вместо {HTTP_201_CREATED}'
-                assert response.data['title'] == data['title'], 'Название не обновилось'
+                assert response.data['title'] == data['title'], 'Название не установилось'
                 board.refresh_from_db()
                 category = board.categories.last()
-                assert category.user == user, 'Обновился автор категории'
+                assert category.user == user, 'Неверный автор категории'
 
     @pytest.mark.django_db
     def test_category_edit_sharing(self, client, one_board_owner_writer_reader_alien):

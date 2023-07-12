@@ -21,3 +21,5 @@ class GoalCreateSerializer(BaseGoalSerializer):
 
 class GoalSerializer(BaseGoalSerializer):
     user = UserSerializer(read_only=True)
+    category = serializers.PrimaryKeyRelatedField(read_only=True)
+

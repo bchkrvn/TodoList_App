@@ -22,3 +22,5 @@ class CommentCreateSerializer(BaseCommentSerializer):
 
 class CommentSerializer(BaseCommentSerializer):
     user = UserSerializer(read_only=True)
+    goal = serializers.PrimaryKeyRelatedField(read_only=True)
+
