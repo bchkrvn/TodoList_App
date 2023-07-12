@@ -81,6 +81,9 @@ class CommentPermissions(BasePermission):
         if request.method in SAFE_METHODS:
             return BoardParticipant.objects.filter(user=request.user, board=obj.goal.category.board).exists()
 
+        if request.method == 'PUT':
+            return obj.user == request.user
+
         return BoardParticipant.objects.filter(
             user=request.user, board=obj.goal.category.board).exclude(
             role=BoardParticipant.Role.reader).exists() or obj.user == request.user
