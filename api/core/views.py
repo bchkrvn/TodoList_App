@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiResponse, inline_serializer
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiResponse
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,7 +26,7 @@ class UserLoginView(APIView):
                    description='Login view for users', summary='User login',
                    responses={200: OpenApiResponse(response=UserSerializer, description='Successful login'),
                               400: OpenApiResponse(description='Wrong password or username')})
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> Response:
         username = request.data.get('username')
         password = request.data.get('password')
         user = authenticate(request, username=username, password=password)
@@ -63,10 +63,10 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
+    def get_object(self) -> User:
         return self.request.user
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs) -> Response:
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -85,5 +85,5 @@ class UserUpdatePasswordAPIView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['put']
 
-    def get_object(self):
+    def get_object(self) -> User:
         return self.request.user

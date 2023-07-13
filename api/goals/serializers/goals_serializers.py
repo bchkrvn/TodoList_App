@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Goal
+from ..models import Goal, Category
 from core.serializers import UserSerializer
 
 
@@ -9,7 +9,7 @@ class BaseGoalSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['created', 'updated']
 
-    def validate_category(self, category):
+    def validate_category(self, category: Category) -> Category:
         if category.is_deleted:
             raise serializers.ValidationError('This category is deleted')
         return category
