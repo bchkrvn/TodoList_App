@@ -20,7 +20,7 @@ class BoardCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
         fields = ('id', 'title', 'created', 'updated', 'user', 'is_deleted')
-        read_only_fields = ('id', 'created', 'updated')
+        read_only_fields = ('id', 'created', 'updated', 'is_deleted')
 
     def create(self, validated_data):
         user = validated_data.pop('user')
@@ -43,7 +43,7 @@ class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
         fields = ('id', 'title', 'created', 'updated', 'participants', 'is_deleted', 'user')
-        read_only_fields = ('id', 'created', 'updated')
+        read_only_fields = ('id', 'created', 'updated', 'is_deleted')
 
     def update(self, instance: Board, validated_data):
         owner = validated_data.pop('user')
