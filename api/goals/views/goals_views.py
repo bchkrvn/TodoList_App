@@ -52,9 +52,8 @@ class GoalListAPIView(ListAPIView):
                                  403: OpenApiResponse(description="You don't have permission")}),
     delete=extend_schema(request=GoalSerializer,
                          description='Delete goal and goal\'s comments', summary='Delete goal',
-                         responses={
-                             204: OpenApiResponse(response={}, description='Goal has been deleted'),
-                             403: OpenApiResponse(description="You don't have permission")}))
+                         responses={204: OpenApiResponse(response={}, description='Goal has been deleted'),
+                                    403: OpenApiResponse(description="You don't have permission")}))
 class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = GoalSerializer
     permission_classes = [IsAuthenticated, GoalPermissions]
@@ -63,7 +62,7 @@ class GoalRUDAPIView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Goal.objects.exclude(status=Goal.StatusChoices.archived).select_related('user')
 
-    def perform_destroy(self, instance: Goal):
+    def perform_destroy(self, instance: Goal) -> Goal:
         instance.status = Goal.StatusChoices.archived
         instance.save()
         return instance

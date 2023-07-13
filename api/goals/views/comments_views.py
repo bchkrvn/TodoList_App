@@ -52,9 +52,8 @@ class CommentListAPIView(ListAPIView):
                                  403: OpenApiResponse(description="You don't have permission")}),
     delete=extend_schema(request=CommentSerializer,
                          description='Delete comment', summary='Delete comment',
-                         responses={
-                             204: OpenApiResponse(response={}, description='Comment has been deleted'),
-                             403: OpenApiResponse(description="You don't have permission")}))
+                         responses={204: OpenApiResponse(response={}, description='Comment has been deleted'),
+                                    403: OpenApiResponse(description="You don't have permission")}))
 class CommentRUDAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, CommentPermissions]
     serializer_class = CommentSerializer

@@ -66,7 +66,7 @@ class CategoryRUDAPIView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Category.objects.filter(is_deleted=False).select_related('user')
 
-    def perform_destroy(self, instance: Category):
+    def perform_destroy(self, instance: Category) -> Category:
         instance.goals.update(status=Goal.StatusChoices.archived)
         instance.is_deleted = True
         instance.save()

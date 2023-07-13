@@ -1,12 +1,12 @@
 from django.core.exceptions import BadRequest
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import BoardParticipant, Category, Goal, Comment
+from .models import BoardParticipant, Category, Goal, Comment, Board
 
 
 class BoardPermissions(BasePermission):
     message = "You don't have permission to edit this board"
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj: Board) -> bool:
         if not request.user.is_authenticated:
             return False
 
@@ -21,7 +21,7 @@ class BoardPermissions(BasePermission):
 class CategoryPermissions(BasePermission):
     message = "You don't have permission to edit this category"
 
-    def has_object_permission(self, request, view, obj: Category):
+    def has_object_permission(self, request, view, obj: Category) -> bool:
         if not request.user.is_authenticated:
             return False
 
@@ -35,7 +35,7 @@ class CategoryPermissions(BasePermission):
 class CreateCategoryPermissions(BasePermission):
     message = "You don't have permission to create this category"
 
-    def has_permission(self, request, view):
+    def has_permission(self, request, view) -> bool:
         board_id = request.data.get('board')
         if type(board_id) is not int:
             raise BadRequest({'goal': 'Wrong board id'})
@@ -47,7 +47,7 @@ class CreateCategoryPermissions(BasePermission):
 class GoalPermissions(BasePermission):
     message = "You don't have permission to edit this goal"
 
-    def has_object_permission(self, request, view, obj: Goal):
+    def has_object_permission(self, request, view, obj: Goal) -> bool:
         if not request.user.is_authenticated:
             return False
 
@@ -61,7 +61,7 @@ class GoalPermissions(BasePermission):
 class CreateGoalPermissions(BasePermission):
     message = "You don't have permission to create this goal"
 
-    def has_permission(self, request, view):
+    def has_permission(self, request, view) -> bool:
         category_id = request.data.get('category')
 
         if type(category_id) is not int:
@@ -74,7 +74,7 @@ class CreateGoalPermissions(BasePermission):
 class CommentPermissions(BasePermission):
     message = "You don't have permission to edit this comment"
 
-    def has_object_permission(self, request, view, obj: Comment):
+    def has_object_permission(self, request, view, obj: Comment) -> bool:
         if not request.user.is_authenticated:
             return False
 
@@ -92,7 +92,7 @@ class CommentPermissions(BasePermission):
 class CreateCommentPermissions(BasePermission):
     message = "You don't have permission to create this comment"
 
-    def has_permission(self, request, view):
+    def has_permission(self, request, view) -> bool:
         goal_id = request.data.get('goal', '')
         try:
             goal = Goal.objects.get(id=goal_id)

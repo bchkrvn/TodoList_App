@@ -58,7 +58,7 @@ class BoardRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         return Board.objects.filter(is_deleted=False).prefetch_related(
             'participants')
 
-    def perform_destroy(self, instance: Board):
+    def perform_destroy(self, instance: Board) -> Board:
         with transaction.atomic():
             instance.is_deleted = True
             instance.save()
