@@ -7,10 +7,12 @@ App wrote on Django with PostgreSQL.
 ## Stack:
 * Python 3.9
 * Django 4.2.2
+* DRF
 * PostgreSQL
+* PyTest
 
 ## How to start:
-**Server is running on `130.193.53.220`
+**Server is running on `130.193.53.220`**
 
 *If you want to run local:*
 1) Clone this repository:    
@@ -30,7 +32,7 @@ VK_ID=...
 VK_SECRET=..
 ```
 
-3) Go to the **docker** folder and run project with the command:  
+3) Go to the **docker** folder and run the project with the command:  
 `docker-compose up -d`
 
 
@@ -38,5 +40,5 @@ VK_SECRET=..
 If you want to read documentation, you can find it here: `130.193.53.220/docs/`
 
 ## Tests:
-If you want to test API, run tests with command:  
+If you want to test API, run tests with the command:  
 `pytest`

@@ -33,14 +33,16 @@ def user_with_password(password):
     user = factories.UserFactory()
     user.set_password(password)
     user.save()
+
     return user, password
 
 
 @pytest.fixture
 @pytest.mark.django_db
-def login_client_with_user(user_with_password, client):
-    user, password = user_with_password
-    client.login(username=user.username, password=password)
+def login_client_with_user(client, user_with_password):
+    user, _ = user_with_password
+    client.force_login(user)
+
     return client, user
 
 
@@ -49,6 +51,7 @@ def login_client_with_user(user_with_password, client):
 def users_board(user_with_password, board):
     user, _ = user_with_password
     board_owner = factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
+
     return board
 
 
@@ -57,6 +60,7 @@ def users_board(user_with_password, board):
 def client_and_board(login_client_with_user, board):
     client, user = login_client_with_user
     board_owner = factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
+
     return client, board
 
 
@@ -65,7 +69,8 @@ def client_and_board(login_client_with_user, board):
 def client_and_category(login_client_with_user, users_board):
     client, user = login_client_with_user
     category = factories.CategoryFactory.create(user=user, board=users_board)
-    not_user_categories = factories.CategoryFactory.create_batch(5)
+    not_user_categories = factories.CategoryFactory.create_batch(2)
+
     return client, category
 
 
@@ -75,7 +80,8 @@ def client_and_goal(login_client_with_user, users_board):
     client, user = login_client_with_user
     category = factories.CategoryFactory.create(user=user, board=users_board)
     goal = factories.GoalFactory.create(user=user, category=category)
-    not_user_goals = factories.GoalFactory.create_batch(5)
+    not_user_goals = factories.GoalFactory.create_batch(2)
+
     return client, goal
 
 
@@ -86,7 +92,8 @@ def client_and_comment(login_client_with_user, users_board):
     category = factories.CategoryFactory.create(user=user, board=users_board)
     goal = factories.GoalFactory.create(user=user, category=category)
     comment = factories.CommentFactory.create(user=user, goal=goal)
-    not_user_comments = factories.CommentFactory.create_batch(5)
+    not_user_comments = factories.CommentFactory.create_batch(2)
+
     return client, comment
 
 
@@ -97,23 +104,8 @@ def users_comment(user_with_password, users_board):
     category = factories.CategoryFactory.create(user=user, board=users_board)
     goal = factories.GoalFactory.create(user=user, category=category)
     comment = factories.CommentFactory.create(user=user, goal=goal)
+
     return comment
-
-
-@pytest.fixture
-@pytest.mark.django_db
-def boards_owner_writer_reader_alien():
-    general_board = factories.BoardFactory.create()
-    owner, writer, reader, alien = factories.UserFactory.create_batch(size=4)
-
-    factories.BoardParticipantFactory.create(user=owner, board=general_board, role=BoardParticipant.Role.owner)
-    factories.BoardParticipantFactory.create(user=writer, board=general_board, role=BoardParticipant.Role.writer)
-    factories.BoardParticipantFactory.create(user=reader, board=general_board, role=BoardParticipant.Role.reader)
-
-    personal_board = factories.BoardFactory.create()
-    factories.BoardParticipantFactory.create(user=owner, board=personal_board, role=BoardParticipant.Role.owner)
-
-    return general_board, personal_board, owner, writer, reader, alien
 
 
 @pytest.fixture
@@ -127,3 +119,13 @@ def one_board_owner_writer_reader_alien():
     factories.BoardParticipantFactory.create(user=reader, board=board, role=BoardParticipant.Role.reader)
 
     return board, owner, writer, reader, alien
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def boards_owner_writer_reader_alien(one_board_owner_writer_reader_alien):
+    general_board, owner, writer, reader, alien = one_board_owner_writer_reader_alien
+    personal_board = factories.BoardFactory.create()
+    factories.BoardParticipantFactory.create(user=owner, board=personal_board, role=BoardParticipant.Role.owner)
+
+    return general_board, personal_board, owner, writer, reader, alien
