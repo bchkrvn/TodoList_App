@@ -4,9 +4,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
 class TestUsersProfileViewGet:
     @pytest.mark.django_db
-    def test_users_profile_view_get(self, client, user_with_password):
-        user, password = user_with_password
-        client.login(username=user.username, password=password)
+    def test_users_profile_view_get(self, client, user_with_password, login_client_with_user):
+        client, user = login_client_with_user
 
         response = client.get(
             '/core/profile'
@@ -30,6 +29,5 @@ class TestUsersProfileViewGet:
         response = client.get(
             '/core/profile'
         )
-
         assert response.status_code == HTTP_403_FORBIDDEN, \
             f'Возвращается код {response.status_code} вместо {HTTP_403_FORBIDDEN}'

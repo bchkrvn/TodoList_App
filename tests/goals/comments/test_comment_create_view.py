@@ -28,7 +28,7 @@ class TestCommentCreateView:
         assert new_comment.updated is not None, 'Нет даты обновления'
 
     @pytest.mark.django_db
-    def test_comment_create_view_errors(self, client, client_and_goal):
+    def test_comment_create_view_errors(self, client, client_and_goal, big_pk):
         client, goal = client_and_goal
         not_users_goal = GoalFactory.create()
 
@@ -59,7 +59,7 @@ class TestCommentCreateView:
         }
         data_3_2 = {
             'text': 'some text',
-            "goal": 100000000000,
+            "goal": big_pk,
         }
 
         response_3_1 = client.post(

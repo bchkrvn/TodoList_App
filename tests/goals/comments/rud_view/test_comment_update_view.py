@@ -2,7 +2,7 @@ import pytest
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
 from goals.serializers.comments_serializers import CommentSerializer
-from factories import CommentFactory, GoalFactory
+from factories import CommentFactory
 
 
 class TestCommentUpdateView:
@@ -35,28 +35,12 @@ class TestCommentUpdateView:
         assert comment.goal.category.board == board, 'Обновилась доска'
 
     @pytest.mark.django_db
-    def test_comment_update_view_errors(self, client, users_comment, user_with_password):
-        comment = users_comment
+    def test_comment_update_view_errors(self, client_and_comment, big_pk):
+        client, comment = client_and_comment
         goal = comment.goal
-        user, password = user_with_password
         not_users_comment = CommentFactory.create()
-        not_user_goal = GoalFactory.create()
-
-        # Обращение неавторизованного пользователя
-        data_1 = {
-            'text': 'new_title',
-            'goal': goal.pk,
-        }
-        response_1 = client.put(
-            f'/goals/goal_comment/{comment.pk}',
-            data=data_1,
-            content_type='application/json'
-        )
-        assert response_1.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         # Обращение без данных
-        client.login(username=user.username, password=password)
         response_2 = client.put(
             f'/goals/goal_comment/{comment.pk}'
         )
@@ -80,7 +64,7 @@ class TestCommentUpdateView:
             'text': 'new_text',
         }
         response_4 = client.put(
-            f'/goals/goal_comment/100000000',
+            f'/goals/goal_comment/{big_pk}',
             data=data_4,
             content_type='application/json'
         )
@@ -104,3 +88,17 @@ class TestCommentUpdateView:
             assert response_5.status_code == HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_5.status_code} вместо {HTTP_400_BAD_REQUEST}'
             assert {'text', } == set(response_5.data.keys()), f'Вернулись не те ошибки'
+
+        # Обращение неавторизованного пользователя
+        client.logout()
+        data_1 = {
+            'text': 'new_title',
+            'goal': goal.pk,
+        }
+        response_1 = client.put(
+            f'/goals/goal_comment/{comment.pk}',
+            data=data_1,
+            content_type='application/json'
+        )
+        assert response_1.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'

@@ -12,18 +12,17 @@ class TestBoardCreateView:
         data = {
             'title': 'Test title',
         }
-
         response = client.post(
             '/goals/board/create',
             data=data,
             content_type='application/json'
         )
-
         assert response.status_code == HTTP_201_CREATED, \
             f'Возвращается код {response.status_code} вместо {HTTP_201_CREATED}'
 
         board = Board.objects.last()
         assert response.data == BoardCreateSerializer(board).data, 'Возвращаются неверные данные'
+
         board_owner = BoardParticipant.objects.last()
         assert board_owner.user == user, 'Неверный пользователь'
         assert board_owner.board == board, 'Неверная доска'

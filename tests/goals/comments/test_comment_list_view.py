@@ -1,8 +1,7 @@
 import pytest
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
-from factories import CommentFactory, CategoryFactory, GoalFactory, UserFactory, BoardFactory, BoardParticipant, \
-    BoardParticipantFactory
+from factories import CommentFactory, GoalFactory, UserFactory
 from goals.serializers.comments_serializers import CommentSerializer
 
 
@@ -12,13 +11,9 @@ class TestCommentListView:
 
     @pytest.fixture
     @pytest.mark.django_db
-    def get_data(self, login_client_with_user):
-        client, user = login_client_with_user
-        board = BoardFactory()
-        owner_board = BoardParticipantFactory(board=board, user=user, role=BoardParticipant.Role.owner)
-        category = CategoryFactory.create(user=user, board=board)
-        goal = GoalFactory.create(user=user, category=category)
-        comments = CommentFactory.create_batch(size=self.COUNT, user=user, goal=goal)
+    def get_data(self, client_and_goal):
+        client, goal = client_and_goal
+        comments = CommentFactory.create_batch(size=self.COUNT, user=goal.user, goal=goal)
         not_users_comments = CommentFactory.create_batch(size=self.COUNT)
 
         return client, comments, goal
@@ -122,7 +117,7 @@ class TestCommentListView:
             f'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_comments_list_view_errors(self, client, user_with_password):
+    def test_comments_list_view_errors(self, client, user):
         another_user = UserFactory.create()
         goal = GoalFactory.create(user=another_user)
         comments = CommentFactory.create_batch(size=self.COUNT, goal=goal, user=another_user)
@@ -136,9 +131,7 @@ class TestCommentListView:
             f'Вернулся код  {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         # Обращение к комментариям чужой цели
-        user, password = user_with_password
-        client.login(username=user.username, password=password)
-
+        client.force_login(user)
         response_2 = client.get(
             f'/goals/goal_comment/list',
             {"limit": self.PAGE_SIZE, 'goal': goal.pk}

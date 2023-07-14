@@ -20,17 +20,22 @@ class TestGoalDestroyView:
         assert goal.status == Goal.StatusChoices.archived, 'Цель не помечена как в архиве'
 
     @pytest.mark.django_db
-    def test_goal_destroy_view_errors(self, client, client_and_goal):
+    def test_goal_destroy_view_errors(self, client_and_goal, big_pk):
         client, goal = client_and_goal
         not_users_goal = GoalFactory.create()
 
         # Обращение к чужой и несуществующей цели
-        for pk in [not_users_goal.pk, 10000000000]:
-            response_2 = client.delete(
-                f'/goals/goal_category/{pk}',
-            )
-            assert response_2.status_code is HTTP_404_NOT_FOUND, \
-                f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+        response_2_1 = client.delete(
+            f'/goals/goal/{not_users_goal.pk}',
+        )
+        assert response_2_1.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_2_1.status_code} вместо {HTTP_403_FORBIDDEN}'
+
+        response_2_2 = client.delete(
+            f'/goals/goal/{big_pk}',
+        )
+        assert response_2_2.status_code is HTTP_404_NOT_FOUND, \
+            f'Вернулся код {response_2_2.status_code} вместо {HTTP_404_NOT_FOUND}'
 
         # Обращение неавторизованного пользователя
         client.logout()

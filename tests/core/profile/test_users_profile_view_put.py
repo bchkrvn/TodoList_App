@@ -4,9 +4,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN, HTTP_400_BAD_
 
 class TestUserProfileViewPut:
     @pytest.mark.django_db
-    def test_user_profile_view_put(self, client, user_with_password):
-        user, password = user_with_password
-        client.login(username=user.username, password=password)
+    def test_user_profile_view_put(self, login_client_with_user):
+        client, user = login_client_with_user
 
         data = {
             'username': 'new_username',
@@ -24,7 +23,6 @@ class TestUserProfileViewPut:
             f'Возвращается код {response.status_code} вместо {HTTP_200_OK}'
 
         user.refresh_from_db()
-
         assert user.username == data['username'], 'username пользователя не обновился'
         assert user.first_name == data['first_name'], 'first_name пользователя не обновился'
         assert user.last_name == data['last_name'], 'last_name пользователя не обновился'
@@ -32,7 +30,7 @@ class TestUserProfileViewPut:
 
     @pytest.mark.django_db
     def test_user_profile_view_put_errors(self, client, user, user_with_password):
-        user_1, password = user_with_password
+        test_user, _ = user_with_password
 
         # Обращение без токена
         response_1 = client.put(
@@ -42,7 +40,7 @@ class TestUserProfileViewPut:
             f'Возвращается код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         # Обращение без данных
-        client.login(username=user_1.username, password=password)
+        client.force_login(test_user)
         response_2 = client.put(
             '/core/profile'
         )

@@ -18,6 +18,11 @@ def password():
 
 
 @pytest.fixture
+def big_pk():
+    return 10000000000
+
+
+@pytest.fixture
 def response_keys():
     return {'count', 'next', 'previous', 'results'}
 
@@ -57,18 +62,17 @@ def users_board(user_with_password, board):
 
 @pytest.fixture
 @pytest.mark.django_db
-def client_and_board(login_client_with_user, board):
-    client, user = login_client_with_user
-    board_owner = factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
-
-    return client, board
+def client_and_board(login_client_with_user, users_board):
+    client, _ = login_client_with_user
+    return client, users_board
 
 
 @pytest.fixture
 @pytest.mark.django_db
-def client_and_category(login_client_with_user, users_board):
-    client, user = login_client_with_user
-    category = factories.CategoryFactory.create(user=user, board=users_board)
+def client_and_category(user_with_password, client_and_board):
+    user, _ = user_with_password
+    client, board = client_and_board
+    category = factories.CategoryFactory.create(user=user, board=board)
     not_user_categories = factories.CategoryFactory.create_batch(2)
 
     return client, category
@@ -76,10 +80,9 @@ def client_and_category(login_client_with_user, users_board):
 
 @pytest.fixture
 @pytest.mark.django_db
-def client_and_goal(login_client_with_user, users_board):
-    client, user = login_client_with_user
-    category = factories.CategoryFactory.create(user=user, board=users_board)
-    goal = factories.GoalFactory.create(user=user, category=category)
+def client_and_goal(login_client_with_user, client_and_category):
+    client, category = client_and_category
+    goal = factories.GoalFactory.create(user=category.user, category=category)
     not_user_goals = factories.GoalFactory.create_batch(2)
 
     return client, goal
@@ -87,11 +90,9 @@ def client_and_goal(login_client_with_user, users_board):
 
 @pytest.fixture
 @pytest.mark.django_db
-def client_and_comment(login_client_with_user, users_board):
-    client, user = login_client_with_user
-    category = factories.CategoryFactory.create(user=user, board=users_board)
-    goal = factories.GoalFactory.create(user=user, category=category)
-    comment = factories.CommentFactory.create(user=user, goal=goal)
+def client_and_comment(login_client_with_user, users_board, client_and_goal):
+    client, goal = client_and_goal
+    comment = factories.CommentFactory.create(user=goal.user, goal=goal)
     not_user_comments = factories.CommentFactory.create_batch(2)
 
     return client, comment

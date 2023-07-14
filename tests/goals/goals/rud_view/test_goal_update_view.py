@@ -1,6 +1,6 @@
 import pytest
 import datetime
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 
 from goals.serializers.goals_serializers import GoalSerializer
 from factories import CategoryFactory, GoalFactory
@@ -39,9 +39,8 @@ class TestGoalUpdateView:
         assert response.data == GoalSerializer(goal).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_goal_update_view_errors(self, client_and_goal):
+    def test_goal_update_view_errors(self, client_and_goal, big_pk):
         client, goal = client_and_goal
-        not_users_category = CategoryFactory.create()
         not_user_goal = GoalFactory.create()
 
         # Обращение без данных
@@ -73,9 +72,9 @@ class TestGoalUpdateView:
             'title': 'Test title',
             'description': 'Test description',
             'due_date': 'дата',
-            'priority': 10000,
-            'status': 10000,
-            'category': 1000000000,
+            'priority': big_pk,
+            'status': big_pk,
+            'category': big_pk,
         }
         data_4_2 = {
             'title': 'Test title',
@@ -83,7 +82,7 @@ class TestGoalUpdateView:
             'due_date': '2023-02-31',
             'priority': 'значение',
             'status': 'значение',
-            'category': not_users_category.pk,
+            'category': not_user_goal.category.pk,
         }
         for data_6 in (data_4_1, data_4_2):
             response_4 = client.put(
@@ -122,14 +121,14 @@ class TestGoalUpdateView:
                 f'Вернулся код {response_5.status_code} вместо {HTTP_400_BAD_REQUEST}'
 
         # Обращение к удаленной категории
-        new_category = CategoryFactory(user=goal.user, is_deleted=True)
+        del_category = CategoryFactory(user=goal.user, is_deleted=True)
         data_6 = {
             'title': 'Test title',
             'description': 'Test description',
             'due_date': '2023-01-01',
             'priority': Goal.StatusChoices.in_progress,
             'status': Goal.PriorityChoices.high,
-            'category': new_category.pk,
+            'category': del_category.pk,
         }
         response_6 = client.put(
             f'/goals/goal/{goal.pk}',

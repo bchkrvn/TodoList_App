@@ -18,21 +18,11 @@ class TestGoalRetrieveAPIView:
         assert response.data == GoalSerializer(goal).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_goal_retrieve_view_errors(self, client, user_with_password):
-        user, password = user_with_password
-        goal = GoalFactory.create(user=user)
+    def test_goal_retrieve_view_errors(self, client_and_goal, big_pk):
+        client, goal = client_and_goal
         not_users_goal = GoalFactory.create()
 
-        # Обращение неавторизованного пользователя
-        response_1 = client.get(
-            f'/goals/goal/{goal.pk}'
-        )
-        assert response_1.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
-
         # Обращение не к своей цели или к несуществующей цели
-        client.login(username=user.username, password=password)
-
         response_2 = client.get(
             f'/goals/goal/{not_users_goal.pk}'
         )
@@ -40,7 +30,15 @@ class TestGoalRetrieveAPIView:
             f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         response_2 = client.get(
-            f'/goals/goal/{1000000000}'
+            f'/goals/goal/{big_pk}'
         )
         assert response_2.status_code is HTTP_404_NOT_FOUND, \
             f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+
+        # Обращение неавторизованного пользователя
+        client.logout()
+        response_1 = client.get(
+            f'/goals/goal/{goal.pk}'
+        )
+        assert response_1.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'

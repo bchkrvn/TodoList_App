@@ -18,21 +18,11 @@ class TestCommentDestroyView:
         assert not Comment.objects.filter(pk=comment.pk).exists(), 'Комментарий остался в БД'
 
     @pytest.mark.django_db
-    def test_comment_destroy_view_errors(self, client, users_comment, user_with_password):
-        user, password = user_with_password
-        comment = users_comment
+    def test_comment_destroy_view_errors(self, client_and_comment, big_pk):
+        client, comment = client_and_comment
         not_users_comment = CommentFactory.create()
 
-        # Обращение неавторизованного пользователя
-        response_1 = client.delete(
-            f'/goals/goal_comment/{comment.pk}',
-        )
-        assert response_1.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
-
         # Обращение к чужому и несуществующему комментарию
-        client.login(username=user.username, password=password)
-
         response_2 = client.delete(
             f'/goals/goal_comment/{not_users_comment.pk}',
         )
@@ -40,7 +30,15 @@ class TestCommentDestroyView:
             f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         response_3 = client.delete(
-            f'/goals/goal_comment/{10000000000}',
+            f'/goals/goal_comment/{big_pk}',
         )
         assert response_3.status_code is HTTP_404_NOT_FOUND, \
             f'Вернулся код {response_3.status_code} вместо {HTTP_404_NOT_FOUND}'
+
+        # Обращение неавторизованного пользователя
+        client.logout()
+        response_1 = client.delete(
+            f'/goals/goal_comment/{comment.pk}',
+        )
+        assert response_1.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'

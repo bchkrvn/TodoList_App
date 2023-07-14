@@ -10,9 +10,8 @@ from factories import CategoryFactory
 
 class TestGoalCreateView:
     @pytest.mark.django_db
-    def test_goal_create_view(self, login_client_with_user, users_board):
-        client, user = login_client_with_user
-        category = CategoryFactory.create(user=user, board=users_board)
+    def test_goal_create_view(self, client_and_category):
+        client, category = client_and_category
 
         data = {
             'title': 'Test title',
@@ -32,7 +31,7 @@ class TestGoalCreateView:
 
         data['category'] = category
         data['due_date'] = datetime.date.fromisoformat(data['due_date'])
-        data['user'] = user
+        data['user'] = category.user
 
         new_goal = Goal.objects.last()
         for field, value in data.items():
@@ -41,30 +40,11 @@ class TestGoalCreateView:
         assert response.data == GoalCreateSerializer(new_goal).data, f'Возвращаются неверные данные'
 
     @pytest.mark.django_db
-    def test_goal_create_view_errors(self, client, user_with_password, users_board):
-        user, password = user_with_password
-        category = CategoryFactory.create(user=user, board=users_board)
+    def test_goal_create_view_errors(self, client_and_category, big_pk):
+        client, category = client_and_category
         not_user_category = CategoryFactory.create()
 
-        # Обращение без авторизации
-        data_1 = {
-            'title': 'Test title',
-            'description': 'Test description',
-            'due_date': '2023-01-01',
-            'priority': 1,
-            'status': 1,
-            'category': category.pk,
-        }
-        response_1 = client.post(
-            '/goals/goal/create',
-            data=data_1,
-            content_type='application/json'
-        )
-        assert response_1.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
-
         # Обращение без данных
-        client.login(username=user.username, password=password)
         response_2 = client.post(
             '/goals/goal/create',
         )
@@ -97,8 +77,8 @@ class TestGoalCreateView:
         data_4 = {
             'title': 'Test title',
             'description': 'Test description',
-            'priority': 1000,
-            'status': 1000,
+            'priority': big_pk,
+            'status': big_pk,
             'category': not_user_category.pk,
         }
         response_4 = client.post(
@@ -117,8 +97,8 @@ class TestGoalCreateView:
             'title': 'Test title',
             'description': 'Test description',
             'due_date': '2023-01-01',
-            'priority': 1,
-            'status': 1,
+            'priority': Goal.StatusChoices.to_do,
+            'status': Goal.PriorityChoices.low,
             'category': category.pk,
         }
         response_5 = client.post(
@@ -129,3 +109,21 @@ class TestGoalCreateView:
         assert response_5.status_code is HTTP_400_BAD_REQUEST, \
             f'Вернулся код {response_5.status_code} вместо {HTTP_400_BAD_REQUEST}'
         assert {'category', } == set(response_5.data.keys()), 'Возвращаются не те ошибки'
+
+        # Обращение без авторизации
+        client.logout()
+        data_1 = {
+            'title': 'Test title',
+            'description': 'Test description',
+            'due_date': '2023-01-01',
+            'priority': Goal.StatusChoices.to_do,
+            'status': Goal.PriorityChoices.low,
+            'category': category.pk,
+        }
+        response_1 = client.post(
+            '/goals/goal/create',
+            data=data_1,
+            content_type='application/json'
+        )
+        assert response_1.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'

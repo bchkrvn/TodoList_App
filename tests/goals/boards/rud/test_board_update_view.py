@@ -28,7 +28,7 @@ class TestBoardUpdateView:
         assert response.data == BoardSerializer(board).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_category_update_view_errors(self, client_and_board):
+    def test_category_update_view_errors(self, client_and_board, big_pk):
         client, board = client_and_board
         not_users_board = BoardFactory.create()
 
@@ -58,7 +58,7 @@ class TestBoardUpdateView:
             'participants': [],
         }
         response_4 = client.put(
-            f'/goals/board/100000000',
+            f'/goals/board/{big_pk}',
             data=data_4,
             content_type='application/json'
         )
@@ -66,15 +66,16 @@ class TestBoardUpdateView:
             f'Вернулся код {response_4.status_code} вместо {HTTP_404_NOT_FOUND}'
 
         # Обращение с пустой строкой или None
-        data_5 = {
+        data_5_1 = {
             'title': '',
             'participants': [],
         }
-        data_6 = {
-            'title': None
+        data_5_2 = {
+            'title': None,
+            'participants': [],
         }
 
-        for data in [data_5, data_6]:
+        for data in [data_5_1, data_5_2]:
             response_5 = client.put(
                 f'/goals/board/{board.pk}',
                 data=data,
@@ -82,6 +83,21 @@ class TestBoardUpdateView:
             )
             assert response_5.status_code is HTTP_400_BAD_REQUEST, \
                 f'Вернулся код {response_5.status_code} вместо {HTTP_400_BAD_REQUEST}'
+
+        # Обращение к удаленной доске
+        board.is_deleted = True
+        board.save()
+        data_6 = {
+            'title': 'new_title',
+            'participants': [],
+        }
+        response_6 = client.put(
+            f'/goals/board/{board.pk}',
+            data=data_6,
+            content_type='application/json'
+        )
+        assert response_6.status_code is HTTP_404_NOT_FOUND, \
+            f'Вернулся код {response_6.status_code} вместо {HTTP_404_NOT_FOUND}'
 
         # Обращение неавторизованного пользователя
         client.logout()

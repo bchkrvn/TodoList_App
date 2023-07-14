@@ -18,29 +18,37 @@ class TestCategoryRetrieveAPIView:
         assert response.data == CategorySerializer(category).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_category_retrieve_view_errors(self, client, user_with_password, users_board):
-        user, password = user_with_password
-        category = CategoryFactory.create(user=user, board=users_board)
+    def test_category_retrieve_view_errors(self, client_and_category, big_pk):
+        client, category = client_and_category
         not_users_category = CategoryFactory.create()
 
-        # Обращение неавторизованного пользователя
+        # Обращение не к своей категории
         response_1 = client.get(
-            f'/goals/goal_category/{category.pk}'
+            f'/goals/goal_category/{not_users_category.pk}'
         )
         assert response_1.status_code is HTTP_403_FORBIDDEN, \
             f'Вернулся код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
 
-        # Обращение не к своей категории
-        client.login(username=user.username, password=password)
-        response_2 = client.get(
-            f'/goals/goal_category/{not_users_category.pk}'
-        )
-        assert response_2.status_code is HTTP_403_FORBIDDEN, \
-            f'Вернулся код {response_2.status_code} вместо {HTTP_403_FORBIDDEN}'
-
         # Обращение к несуществующей категории
+        response_2 = client.get(
+            f'/goals/goal_category/{big_pk}'
+        )
+        assert response_2.status_code is HTTP_404_NOT_FOUND, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+
+        # Обращение к удаленной категории
+        category.is_deleted = True
+        category.save()
         response_3 = client.get(
-            f'/goals/goal_category/100000000'
+            f'/goals/goal_category/{category.pk}'
         )
         assert response_3.status_code is HTTP_404_NOT_FOUND, \
             f'Вернулся код {response_3.status_code} вместо {HTTP_404_NOT_FOUND}'
+
+        # Обращение неавторизованного пользователя
+        client.logout()
+        response_4 = client.get(
+            f'/goals/goal_category/{not_users_category.pk}'
+        )
+        assert response_4.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код {response_4.status_code} вместо {HTTP_403_FORBIDDEN}'

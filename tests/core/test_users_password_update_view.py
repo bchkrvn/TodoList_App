@@ -4,9 +4,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN, HTTP_400_BAD_
 
 class TestUsersPasswordUpdateView:
     @pytest.mark.django_db
-    def test_users_password_update_view(self, client, user_with_password):
-        user, password = user_with_password
-        client.login(username=user.username, password=password)
+    def test_users_password_update_view(self, login_client_with_user, password):
+        client, user = login_client_with_user
         data = {
             'old_password': password,
             'new_password': password + '1',
@@ -45,7 +44,7 @@ class TestUsersPasswordUpdateView:
             f'Возвращается код {response_1.status_code} вместо {HTTP_403_FORBIDDEN}'
 
         # Обращение без данных
-        client.login(username=user.username, password=password)
+        client.force_login(user)
         response_2 = client.put(
             '/core/update_password'
         )
@@ -64,6 +63,8 @@ class TestUsersPasswordUpdateView:
         )
         assert response_3.status_code == HTTP_400_BAD_REQUEST, \
             f'Возвращается статус {response_3.status_code} вместо {HTTP_400_BAD_REQUEST}'
+        user.refresh_from_db()
+        assert user.check_password(password), 'Обновился пароль у пользователя'
 
         # Обращение с простым новым паролем
         data_4 = {

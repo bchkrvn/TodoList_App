@@ -18,7 +18,7 @@ class TestBoardRetrieveAPIView:
         assert response.data == BoardSerializer(board).data, 'Вернулись неверные данные'
 
     @pytest.mark.django_db
-    def test_board_retrieve_view_errors(self, client_and_board):
+    def test_board_retrieve_view_errors(self, client_and_board, big_pk):
         client, board = client_and_board
         not_users_board = BoardFactory.create()
 
@@ -31,7 +31,16 @@ class TestBoardRetrieveAPIView:
 
         # Обращение к несуществующей доске
         response_2 = client.get(
-            f'/goals/board/100000000'
+            f'/goals/board/{big_pk}'
+        )
+        assert response_2.status_code is HTTP_404_NOT_FOUND, \
+            f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
+
+        # Обращение к удаленной доске
+        board.is_deleted = True
+        board.save()
+        response_2 = client.get(
+            f'/goals/board/{board.pk}'
         )
         assert response_2.status_code is HTTP_404_NOT_FOUND, \
             f'Вернулся код {response_2.status_code} вместо {HTTP_404_NOT_FOUND}'
@@ -39,7 +48,7 @@ class TestBoardRetrieveAPIView:
         # Обращение неавторизованного пользователя
         client.logout()
         response_3 = client.get(
-            f'/goals/board/{board.pk}'
+            f'/goals/board/{not_users_board.pk}'
         )
         assert response_3.status_code is HTTP_403_FORBIDDEN, \
             f'Вернулся код {response_3.status_code} вместо {HTTP_403_FORBIDDEN}'

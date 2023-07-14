@@ -8,12 +8,10 @@ class TestGoalListView:
     LIMIT = 300
 
     @pytest.fixture
-    def get_data(self, login_client_with_user, users_board):
-        client, user = login_client_with_user
-        category = CategoryFactory.create(user=user, board=users_board)
-        goals = GoalFactory.create_batch(category=category, user=user, size=self.COUNT)
-        not_user_category = CategoryFactory.create()
-        not_user_goals = GoalFactory.create_batch(category=not_user_category, size=self.COUNT)
+    def get_data(self, client_and_category):
+        client, category = client_and_category
+        goals = GoalFactory.create_batch(category=category, user=category.user, size=self.COUNT)
+        not_user_goals = GoalFactory.create_batch(size=self.COUNT)
         return client, goals
 
     @pytest.mark.django_db

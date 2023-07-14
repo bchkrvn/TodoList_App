@@ -1,5 +1,5 @@
 import pytest
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
 from factories import BoardFactory, BoardParticipantFactory
 from goals.models import BoardParticipant
@@ -74,3 +74,13 @@ class TestBoardListView:
         assert len(response.data['results']) == self.COUNT % self.PAGE_SIZE, 'Вернулось не то количество элементов'
         assert response.data['results'] == BoardListSerializer(boards[-(self.COUNT % self.PAGE_SIZE):],
                                                                many=True).data, f'Вернулись неверные данные'
+
+    @pytest.mark.django_db
+    def test_boars_list_view_errors(self, client):
+        # Неавторизованный пользователь
+        response = client.get(
+            f'/goals/board/list',
+            {"limit": self.PAGE_SIZE}
+        )
+        assert response.status_code is HTTP_403_FORBIDDEN, \
+            f'Вернулся код  {response.status_code} вместо {HTTP_403_FORBIDDEN}'
