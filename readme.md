@@ -32,7 +32,7 @@ VK_ID=...
 VK_SECRET=..
 ```
 
-3) Go to the **docker** folder and run the project with the command:  
+3)  Run the project with the command:  
 `docker-compose up -d`
 
 
