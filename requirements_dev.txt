@@ -6,9 +6,9 @@ charset-normalizer==3.1.0
 cryptography==41.0.1
 defusedxml==0.7.1
 Django==4.2.2
+django-filter==23.2
 django-rest-framework==0.1.0
 djangorestframework==3.14.0
-django-filter==23.2
 drf-spectacular==0.26.3
 exceptiongroup==1.1.1
 factory-boy==3.2.1

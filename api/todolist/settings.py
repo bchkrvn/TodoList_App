@@ -41,8 +41,9 @@ INSTALLED_APPS = [
     'social_django',
     'core.apps.CoreConfig',
     'goals.apps.GoalsConfig',
+    'bot.apps.BotConfig',
     'drf_spectacular',
-    "django_filters"
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -113,8 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-# TIME_ZONE = 'Europe/Moscow'
-
 USE_I18N = True
 
 USE_TZ = True
@@ -159,3 +158,7 @@ SPECTACULAR_SETTINGS = {
     "CONTACT": "tg: @asderuss",
     'SERVERS': "130.193.53.220"
 }
+
+# Telegram token
+TGBOT_TOKEN = os.getenv('TGBOT_TOKEN')
+TOKEN_LENGTH = 8
