@@ -10,7 +10,6 @@ class TgClient:
         self.token = settings.TGBOT_TOKEN
 
     def _get_url(self, method: str) -> str:
-        print(f"https://api.telegram.org/bot{self.token}/{method}")
         return f"https://api.telegram.org/bot{self.token}/{method}"
 
     def get_updates(self, offset: int = 0, timeout: int = 60) -> dc.GetUpdatesResponse:
@@ -19,8 +18,6 @@ class TgClient:
                   'offset': offset}
 
         response = requests.get(self._get_url(method), params=params)
-        print(response.status_code)
-        print(response.text)
         data = json.loads(response.text)
 
         updates = []
@@ -47,5 +44,4 @@ class TgClient:
                   'text': text}
         response = requests.get(self._get_url(method), params=params)
         data = json.loads(response.text)
-        print(data)
         return dc.SendMessageResponse(**data)

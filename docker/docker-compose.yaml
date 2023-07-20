@@ -58,6 +58,17 @@ services:
     volumes:
       - ../api:/code/
 
+  bot:
+    build: ../api/.
+    env_file: .docker_env
+    command: python3 manage.py runbot
+    tty: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
 volumes:
   postgres_data_todo_app:
   django_static:
