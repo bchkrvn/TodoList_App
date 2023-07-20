@@ -36,8 +36,8 @@ class CategoryListAPIView(ListAPIView):
     search_fields = ['title']
 
     def get_queryset(self):
-        return Category.objects.filter(board__participants__user=self.request.user, is_deleted=False).select_related(
-            'user')
+        return Category.objects.filter(board__participants__user=self.request.user,
+                                       is_deleted=False).select_related('user')
 
 
 @extend_schema_view(

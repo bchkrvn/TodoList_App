@@ -30,7 +30,8 @@ class BotVerifyAPIView(GenericAPIView):
         tg_user.user = self.request.user
         tg_user.position = TelegramUser.Position.wait_command
         tg_user.save()
-        TgClient().send_message(tg_user.tg_chat_id,
-                                'Вы успешно подключились к приложению!')
+
+        message = 'Вы успешно подключились к приложению!'
+        TgClient().send_message(tg_user.tg_chat_id, message)
 
         return Response(status=status.HTTP_200_OK)
