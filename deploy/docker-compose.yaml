@@ -52,6 +52,16 @@ services:
       migrations:
         condition: service_completed_successfully
 
+  bot:
+    image: ${DOCKER_USER}/todolist:latest
+    env_file: .env
+    command: python3 manage.py runbot
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
 volumes:
   postgres_data_todo_app:
   django_static:
