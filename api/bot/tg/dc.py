@@ -26,7 +26,6 @@ class Message:
     chat: Chat
     date: int
     text: str
-    # entities: List[Dict]
 
 
 @dataclass

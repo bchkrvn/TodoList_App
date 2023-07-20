@@ -16,3 +16,6 @@ class TelegramUser(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     position = models.PositiveIntegerField(choices=Position.choices, default=Position.not_authorized)
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return f'TG_User {self.user}'if self.user else f'TG_User {self.tg_user_id}'

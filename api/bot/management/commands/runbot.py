@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 import secrets
-
 from django.db.models import QuerySet
 
 from bot.tg.client import TgClient
@@ -44,6 +43,9 @@ class Command(BaseCommand):
         self.send_verification_code(item)
 
     def choose_position(self, item: Update) -> None:
+        """
+        Choose user position in bot
+        """
         positions = {
             TelegramUser.Position.not_authorized: self.send_verification_code,
             TelegramUser.Position.wait_command: self.choose_command,
