@@ -28,6 +28,7 @@ class BotVerifyAPIView(GenericAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         tg_user.user = self.request.user
+        tg_user.position = TelegramUser.Position.wait_command
         tg_user.save()
         TgClient().send_message(tg_user.tg_chat_id,
                                 'Вы успешно подключились к приложению!')
