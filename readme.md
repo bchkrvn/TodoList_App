@@ -12,7 +12,7 @@ App wrote on Django with PostgreSQL.
 * PyTest
 
 ## How to start:
-**Server is running on `130.193.53.220`**
+**Server is running on `http://130.193.53.220`**
 
 *If you want to run local:*
 1) Clone this repository:    
@@ -29,15 +29,19 @@ DEBUG=...
 DB_HOST=...
 DB_PORT=...
 VK_ID=...
-VK_SECRET=..
+VK_SECRET=...
+TGBOT_TOKEN=...
 ```
 
 3)  Run the project with the command:  
 `docker-compose up -d`
 
+## Telegram bot
+After registration on the web-site you can use the telegram bot:
+http://t.me/TodolistApp_Bot
 
 ## Documentation:
-If you want to read documentation, you can find it here: `130.193.53.220/docs/`
+If you want to read documentation, you can find it here: `http://130.193.53.220/docs/`
 
 ## Tests:
 If you want to test API, run tests with the command:  
