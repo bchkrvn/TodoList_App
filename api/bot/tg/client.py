@@ -21,7 +21,7 @@ class TgClient:
                   'offset': offset}
 
         response = requests.get(self._get_url(method), params=params)
-        data = json.loads(response.text)
+        data = response.json()
 
         updates = []
         for update in data['result']:
@@ -39,7 +39,7 @@ class TgClient:
                 )
             )
 
-            return dc.GetUpdatesResponse(ok=data['ok'], result=updates)
+        return dc.GetUpdatesResponse(ok=data['ok'], result=updates)
 
     def send_message(self, chat_id: int, text: str) -> dc.SendMessageResponse:
         method = 'sendMessage'
