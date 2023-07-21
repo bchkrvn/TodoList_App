@@ -50,9 +50,6 @@ class Command(BaseCommand):
         self.send_verification_code(item)
 
     def choose_position(self, item: Update) -> None:
-        """
-        Choose user position in bot
-        """
         self.positions[self.tg_user.position](item)
 
     def send_verification_code(self, item: Update) -> None:
@@ -72,8 +69,7 @@ class Command(BaseCommand):
     def send_categories(self, item: Update) -> None:
         categories = self.db_manager.get_users_categories(self.tg_user)
         self.message_sender.send_categories_message(self.tg_user.tg_chat_id, categories)
-        self.tg_user.position = TelegramUser.Position.choose_category
-        self.tg_user.save()
+        self.db_manager.change_position(self.tg_user, TelegramUser.Position.choose_category)
 
     def cancel(self) -> None:
         self.message_sender.send_cancel_message(self.tg_user.tg_chat_id)
