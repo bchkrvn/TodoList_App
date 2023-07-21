@@ -3,8 +3,8 @@ from django.core.management.base import BaseCommand
 from bot.tg.client import TgClient
 from bot.models import TelegramUser
 from bot.tg.dc import Update
-from .message_sender import MessageSender
-from .db_manager import DBManager
+from bot.bot_managers.message_sender import MessageSender
+from bot.bot_managers.db_manager import DBManager
 from goals.models import Category
 
 
