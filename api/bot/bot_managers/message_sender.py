@@ -61,7 +61,7 @@ class MessageSender:
         if not categories:
             message = 'У вас нет доступных для создания целей категорий'
         else:
-            message = 'Ваши категории: \n'
+            message = 'Ваши категории, к которым можно создать цели: \n'
             for category in categories:
                 message += f'\n{category.pk} - {category.title}\n'
 

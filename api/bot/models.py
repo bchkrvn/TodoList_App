@@ -11,7 +11,6 @@ class TelegramUser(models.Model):
         create_goal = 4, "Создание цели"
 
     tg_chat_id = models.IntegerField()
-    tg_user_id = models.IntegerField()
     verification_code = models.CharField(max_length=30, null=True, unique=True)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     position = models.PositiveIntegerField(choices=Position.choices, default=Position.not_authorized)

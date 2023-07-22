@@ -1,46 +1,31 @@
-from dataclasses import dataclass
 from typing import List
+from pydantic import BaseModel
 
 
-@dataclass
-class User:
-    id: int
-    is_bot: bool
-    first_name: str
-    username: str
-    language_code: str
-
-
-@dataclass
-class Chat:
+class Chat(BaseModel):
     id: int
     first_name: str
     username: str
     type: str
 
 
-@dataclass
-class Message:
+class Message(BaseModel):
     message_id: int
-    from_: User
     chat: Chat
     date: int
     text: str
 
 
-@dataclass
-class Update:
+class Update(BaseModel):
     update_id: int
     message: Message
 
 
-@dataclass
-class GetUpdatesResponse:
+class GetUpdatesResponse(BaseModel):
     ok: bool
     result: List[Update]
 
 
-@dataclass
-class SendMessageResponse:
+class SendMessageResponse(BaseModel):
     ok: bool
     result: Message

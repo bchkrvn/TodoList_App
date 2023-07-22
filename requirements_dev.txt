@@ -30,6 +30,7 @@ pytest-factoryboy==2.5.1
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 python3-openid==3.2.0
+pydantic==1.10
 pytz==2023.3
 PyYAML==6.0
 requests==2.31.0

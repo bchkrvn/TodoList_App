@@ -36,23 +36,24 @@ class Command(BaseCommand):
                 continue
             for item in res.result:
                 offset = item.update_id + 1
-                try:
-                    self.tg_user = self.db_manager.get_tg_user(item.message.from_.id, item.message.chat.id)
-                except TelegramUser.DoesNotExist:
-                    self.tg_user = None
-                    self.send_first_message(item)
-                    continue
-                self.choose_position(item)
+                self.tg_user, is_created = self.db_manager.get_tg_user(item.message.chat.id)
 
-    def send_first_message(self, item: Update) -> None:
-        self.tg_user = self.db_manager.create_tg_user(item.message.from_.id, item.message.chat.id)
+                if is_created:
+                    self.send_first_message()
+                else:
+                    self.get_position(item)
+
+    def send_first_message(self) -> None:
         self.message_sender.send_new_user_message(self.tg_user.tg_chat_id)
-        self.send_verification_code(item)
+        self.send_verification_code()
 
-    def choose_position(self, item: Update) -> None:
+    def get_position(self, item: Update) -> None:
+        """
+        Get bot's position for user
+        """
         self.positions[self.tg_user.position](item)
 
-    def send_verification_code(self, item: Update) -> None:
+    def send_verification_code(self, *args) -> None:
         token = self.message_sender.send_verification_code_and_get_token(self.tg_user.tg_chat_id)
         self.db_manager.set_token_for_tg_user(self.tg_user, token)
 
@@ -62,16 +63,26 @@ class Command(BaseCommand):
         else:
             self.message_sender.send_wrong_command_message(self.tg_user.tg_chat_id, self.commands)
 
-    def send_goals(self, item: Update) -> None:
+    def send_goals(self, *args) -> None:
+        """
+        Send all user's goals
+        """
         goals = self.db_manager.get_users_goals(self.tg_user)
         self.message_sender.send_goals_message(self.tg_user.tg_chat_id, goals)
 
-    def send_categories(self, item: Update) -> None:
+    def send_categories(self, *args) -> None:
+        """
+        Send user's categories where he is an owner or writer
+        """
         categories = self.db_manager.get_users_categories(self.tg_user)
         self.message_sender.send_categories_message(self.tg_user.tg_chat_id, categories)
-        self.db_manager.change_position(self.tg_user, TelegramUser.Position.choose_category)
+        if categories:
+            self.db_manager.change_position(self.tg_user, TelegramUser.Position.choose_category)
 
     def cancel(self) -> None:
+        """
+        Back bot to "wait command" position if user send "cancel" command
+        """
         self.message_sender.send_cancel_message(self.tg_user.tg_chat_id)
         self.db_manager.change_position(self.tg_user, TelegramUser.Position.wait_command)
 
