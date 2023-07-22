@@ -11,11 +11,11 @@ App wrote on Django with PostgreSQL. Tested with using PyTest.
 * PostgreSQL
 * PyTest
 
-## Application features
+## Application features:
 **Video:**
 [![Watch the video](https://img.youtube.com/vi/ZSD_q8A-bYE/maxres3.jpg)](https://youtu.be/ZSD_q8A-bYE)
 
-- Registration, authentication on web-site with using VK-account
+- Registration, authentication on web-site using VK-account
 - Create, update, delete and share boards
 - Create, update, delete categories
 - Create, update, delete goals
@@ -46,7 +46,7 @@ TGBOT_TOKEN=...
 3)  Run the project with the command:  
 `docker-compose up -d`
 
-## Telegram bot
+## Telegram bot:
 After registration on the web-site you can use the telegram bot:
 http://t.me/TodolistApp_Bot
 

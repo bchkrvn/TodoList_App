@@ -28,24 +28,30 @@ class MessageSender:
 
     def send_goal_create_error_message(self, chat: int) -> None:
         """
-        Send a message about successful goal creation
+        Send a message about bad category selection
         """
         message = 'Введите верный id категории'
         self._send_message(chat, message)
 
     def send_create_goal_message(self, chat: int, category: Category) -> None:
         """
-        Send a message about
+        Send a message with a suggestion to choose a name for the goal
         """
         message = f'Введите новую цель для категории "{category.title}":' \
                   f'\nДля отмены введите /cancel'
         self._send_message(chat, message)
 
     def send_goal_created_message(self, chat: int, goal: Goal) -> None:
+        """
+        Send a message about successful goal creating
+        """
         message = f'Новая цель "{goal.title} создана!"'
         self._send_message(chat, message)
 
     def send_verification_code_and_get_token(self, chat: int) -> str:
+        """
+        Send a message with a verification code and return this verification code
+        """
         message = 'Для того, чтобы подключить приложение, введите на сайте следующий код:'
         token = secrets.token_hex(settings.TOKEN_LENGTH)
         self._send_message(chat, message)
@@ -53,11 +59,17 @@ class MessageSender:
         return token
 
     def send_wrong_command_message(self, chat: int, commands: dict) -> None:
+        """
+        Send a message about invalid command
+        """
         message = 'Неизвестная команда'
         message += '\nДоступные команды:\n' + '\n'.join(commands)
         self._send_message(chat, message)
 
     def send_goals_message(self, chat: int, goals: QuerySet) -> None:
+        """
+        Send a message with user's goals
+        """
         if not goals:
             message = 'У вас нет целей'
         else:
@@ -70,6 +82,9 @@ class MessageSender:
         self._send_message(chat, message)
 
     def send_categories_message(self, chat: int, categories: QuerySet) -> None:
+        """
+        Send a message with user's categories where he isn't reader
+        """
         if not categories:
             message = 'У вас нет доступных для создания целей категорий'
         else:
