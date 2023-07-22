@@ -2,7 +2,7 @@
 
 ## Description:
 **To-do list APP** is a small application for task scheduling. 
-App wrote on Django with PostgreSQL.
+App wrote on Django with PostgreSQL. Tested with using PyTest.
 
 ## Stack:
 * Python 3.9
@@ -11,9 +11,15 @@ App wrote on Django with PostgreSQL.
 * PostgreSQL
 * PyTest
 
-##
+## Application features
+**Video:**
 [![Watch the video](https://img.youtube.com/vi/ZSD_q8A-bYE/maxres3.jpg)](https://youtu.be/ZSD_q8A-bYE)
 
+- Registration, authentication on web-site with using VK-account
+- Create, update, delete and share boards
+- Create, update, delete categories
+- Create, update, delete goals
+- Watch and create goals using Telegram Bot
 
 ## How to start:
 **Server is running on http://130.193.53.220**
