@@ -13,18 +13,30 @@ class MessageSender:
         self.tg_client.send_message(chat, message)
 
     def send_new_user_message(self, chat: int) -> None:
+        """
+        Send a message to a new user in the bot
+        """
         message = 'Привет, новый пользователь!'
         self._send_message(chat, message)
 
     def send_cancel_message(self, chat: int) -> None:
+        """
+        Send a message about successful cancel when user canceled the operation
+        """
         message = 'Операция отменена'
         self._send_message(chat, message)
 
     def send_goal_create_error_message(self, chat: int) -> None:
+        """
+        Send a message about successful goal creation
+        """
         message = 'Введите верный id категории'
         self._send_message(chat, message)
 
     def send_create_goal_message(self, chat: int, category: Category) -> None:
+        """
+        Send a message about
+        """
         message = f'Введите новую цель для категории "{category.title}":' \
                   f'\nДля отмены введите /cancel'
         self._send_message(chat, message)

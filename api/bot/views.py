@@ -1,3 +1,4 @@
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +14,10 @@ class BotVerifyAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BotVerifySerializer
 
+    @extend_schema(request=BotVerifySerializer,
+                   description='Connect todolist with telegram bot', summary='Connect with tg bot',
+                   responses={200: OpenApiResponse(description='Successful connect'),
+                              400: OpenApiResponse(description='Wrong verification code')})
     def patch(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

@@ -11,6 +11,10 @@ App wrote on Django with PostgreSQL.
 * PostgreSQL
 * PyTest
 
+##
+[![Watch the video](https://img.youtube.com/vi/ZSD_q8A-bYE/maxres3.jpg)](https://youtu.be/ZSD_q8A-bYE)
+
+
 ## How to start:
 **Server is running on http://130.193.53.220**
 

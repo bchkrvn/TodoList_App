@@ -7,6 +7,10 @@ class BoardPermissions(BasePermission):
     message = "You don't have permission to edit this board"
 
     def has_object_permission(self, request, view, obj: Board) -> bool:
+        """
+        All board's participants can get the board,
+        but only a board's owner can update and delete the board
+        """
         if not request.user.is_authenticated:
             return False
 
@@ -22,6 +26,10 @@ class CategoryPermissions(BasePermission):
     message = "You don't have permission to edit this category"
 
     def has_object_permission(self, request, view, obj: Category) -> bool:
+        """
+        All board's participants can get the category,
+        but readers can't update and delete the category
+        """
         if not request.user.is_authenticated:
             return False
 
@@ -36,6 +44,7 @@ class CreateCategoryPermissions(BasePermission):
     message = "You don't have permission to create this category"
 
     def has_permission(self, request, view) -> bool:
+        """ A board's participant can create a category if he isn't reader """
         board_id = request.data.get('board')
         if type(board_id) is not int:
             raise BadRequest({'goal': 'Wrong board id'})
@@ -48,6 +57,10 @@ class GoalPermissions(BasePermission):
     message = "You don't have permission to edit this goal"
 
     def has_object_permission(self, request, view, obj: Goal) -> bool:
+        """
+        All board's participants can get the goal,
+        but readers can't update and delete the goal
+        """
         if not request.user.is_authenticated:
             return False
 
@@ -62,6 +75,9 @@ class CreateGoalPermissions(BasePermission):
     message = "You don't have permission to create this goal"
 
     def has_permission(self, request, view) -> bool:
+        """
+        A board's participant can create a goal if he isn't reader
+        """
         category_id = request.data.get('category')
 
         if type(category_id) is not int:
@@ -75,6 +91,11 @@ class CommentPermissions(BasePermission):
     message = "You don't have permission to edit this comment"
 
     def has_object_permission(self, request, view, obj: Comment) -> bool:
+        """
+        All board's participants can get the comment,
+        only a comment's owner can update it
+        and a writer, a comment's owner and a board's owner can delete it
+        """
         if not request.user.is_authenticated:
             return False
 
@@ -93,6 +114,7 @@ class CreateCommentPermissions(BasePermission):
     message = "You don't have permission to create this comment"
 
     def has_permission(self, request, view) -> bool:
+        """ All board's participants can create a comment """
         goal_id = request.data.get('goal', '')
         try:
             goal = Goal.objects.get(id=goal_id)

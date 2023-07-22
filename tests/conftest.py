@@ -55,7 +55,7 @@ def login_client_with_user(client, user_with_password):
 @pytest.mark.django_db
 def users_board(user_with_password, board):
     user, _ = user_with_password
-    board_owner = factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
+    factories.BoardParticipantFactory.create(user=user, board=board, role=BoardParticipant.Role.owner)
 
     return board
 

@@ -8,6 +8,9 @@ from bot.models import TelegramUser
 class DBManager:
 
     def get_tg_user(self, chat_id: int) -> TelegramUser:
+        """
+        Get telegram user from DB
+        """
         return TelegramUser.objects.get_or_create(tg_chat_id=chat_id)
 
     def set_token_for_tg_user(self, tg_user: TelegramUser, token: str) -> None:
@@ -49,4 +52,7 @@ class DBManager:
         tg_user.save()
 
     def create_new_goal(self, category: Category, title: str, user: User) -> Goal:
+        """
+        Create goal for selected user's category
+        """
         return Goal.objects.create(category=category, title=title, user=user)

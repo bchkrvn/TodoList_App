@@ -161,4 +161,5 @@ SPECTACULAR_SETTINGS = {
 
 # Telegram token
 TGBOT_TOKEN = os.getenv('TGBOT_TOKEN')
+TELEGRAM_API_URL = "https://api.telegram.org/bot"
 TOKEN_LENGTH = 8

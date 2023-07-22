@@ -5,7 +5,7 @@ from social_django.models import Association, Nonce
 from django.utils.translation import gettext_lazy as _
 
 from .models import User
-from goals.models import Category, BoardParticipant
+from goals.models import BoardParticipant
 
 
 class BoardInline(admin.TabularInline):

@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiResponse
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
@@ -65,7 +66,8 @@ class CategoryRUDAPIView(RetrieveUpdateDestroyAPIView):
         return Category.objects.filter(is_deleted=False).select_related('user')
 
     def perform_destroy(self, instance: Category) -> Category:
-        instance.goals.update(status=Goal.StatusChoices.archived)
-        instance.is_deleted = True
-        instance.save()
+        with transaction.atomic():
+            instance.goals.update(status=Goal.StatusChoices.archived)
+            instance.is_deleted = True
+            instance.save()
         return instance
