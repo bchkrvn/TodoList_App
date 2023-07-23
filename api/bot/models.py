@@ -10,7 +10,7 @@ class TelegramUser(models.Model):
         choose_category = 3, "Выбор категории"
         create_goal = 4, "Создание цели"
 
-    tg_chat_id = models.IntegerField()
+    tg_chat_id = models.BigIntegerField()
     verification_code = models.CharField(max_length=30, null=True, unique=True)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     position = models.PositiveIntegerField(choices=Position.choices, default=Position.not_authorized)

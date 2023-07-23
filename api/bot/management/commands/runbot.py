@@ -74,7 +74,7 @@ class Command(BaseCommand):
         """
         Send user's categories where he is an owner or writer
         """
-        categories = self.db_manager.get_users_categories(self.tg_user)
+        categories = self.db_manager.get_users_categories(self.tg_user).all()
         self.message_sender.send_categories_message(self.tg_user.tg_chat_id, categories)
         if categories:
             self.db_manager.change_position(self.tg_user, TelegramUser.Position.choose_category)
