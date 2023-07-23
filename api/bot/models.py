@@ -17,4 +17,8 @@ class TelegramUser(models.Model):
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return f'TG_User {self.user}'if self.user else f'TG_User {self.tg_chat_id}'
+        return f'TG_User {self.user}' if self.user else f'TG_User {self.tg_chat_id}'
+
+    class Meta:
+        verbose_name = 'Пользователь телеграм'
+        verbose_name_plural = 'Пользователи телеграм'
