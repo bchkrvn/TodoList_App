@@ -168,3 +168,6 @@ api/static/
 
 #swager
 swager.json
+
+# db data
+db_data

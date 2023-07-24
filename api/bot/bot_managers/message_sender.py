@@ -45,7 +45,7 @@ class MessageSender:
         """
         Send a message about successful goal creating
         """
-        message = f'Новая цель "{goal.title} создана!"'
+        message = f'Новая цель "{goal.title}" создана!'
         self._send_message(chat, message)
 
     def send_verification_code_and_get_token(self, chat: int) -> str:
@@ -77,7 +77,7 @@ class MessageSender:
             for goal in goals:
                 message += f'\n{goal.title}\n'
                 if goal.due_date:
-                    message += f'Дедлайн: {goal.due_date}\n'
+                    message += f'Дедлайн: {goal.due_date.strftime("%d.%m.%Y")}\n'
         message += '\nДля создания новой цели отправьте команду /create'
         self._send_message(chat, message)
 
