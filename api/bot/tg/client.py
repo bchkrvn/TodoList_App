@@ -24,7 +24,7 @@ class TgClient:
         response = requests.get(self._get_url(method), params=params)
         return response_class(**response.json())
 
-    def get_updates(self, offset: int = 0, timeout: int = 60) -> T:
+    def get_updates(self, offset: int = 0, timeout: int = 10) -> T:
         """
         Get new messages from Telegram API
         """
@@ -33,7 +33,7 @@ class TgClient:
 
         return self._get_response(method, params, GetUpdatesResponse)
 
-    def send_message(self, chat_id: int, text: str, timeout: int = 60) -> T:
+    def send_message(self, chat_id: int, text: str, timeout: int = 10) -> T:
         """
         Send message to tg_user using Telegram API
         """
