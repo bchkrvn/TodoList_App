@@ -171,3 +171,4 @@ swager.json
 
 # db data
 db_data
+redis_data

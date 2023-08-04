@@ -1,6 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
-from core.models import User
+User = get_user_model()
 
 
 class BaseModel(models.Model):

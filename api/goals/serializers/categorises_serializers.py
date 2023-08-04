@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from goals.models import Category, Board
+from ..models import Category, Board
 from core.serializers import UserSerializer
 
 

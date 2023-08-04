@@ -69,6 +69,36 @@ services:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
+      redis:
+        condition: service_started
+
+  redis:
+    image: redis:latest
+    restart: always
+    env_file: .docker_env
+    ports:
+      - '6379:6379'
+    volumes:
+      - ../redis_data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+
+  celery:
+    build: ../api/.
+    env_file:
+      - .docker_env
+    command: celery -A todolist worker -l info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      api:
+        condition: service_started
 
 volumes:
   django_static:

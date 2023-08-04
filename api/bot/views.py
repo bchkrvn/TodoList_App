@@ -3,11 +3,11 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.conf import settings
 
 from .serializer import BotVerifySerializer
 from .models import TelegramUser
 from .tg.client import TgClient
+from .tg.tasks import send_email_task
 
 
 class BotVerifyAPIView(GenericAPIView):
@@ -37,6 +37,9 @@ class BotVerifyAPIView(GenericAPIView):
         tg_user.save()
 
         message = 'Вы успешно подключились к приложению!'
-        TgClient().send_message(tg_user.tg_chat_id, message)
+        TgClient().create_and_send_message(tg_user.tg_chat_id, message)
+
+        if tg_user.user.email:
+            send_email_task.delay(tg_user.user_id)
 
         return Response(status=status.HTTP_200_OK)

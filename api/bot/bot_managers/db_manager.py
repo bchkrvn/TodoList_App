@@ -3,6 +3,7 @@ from django.db.models import QuerySet
 from goals.models import Goal, Category, BoardParticipant
 from core.models import User
 from bot.models import TelegramUser
+from bot.tg.tasks import change_bot_position_task, set_token_task
 
 
 class DBManager:
@@ -17,8 +18,7 @@ class DBManager:
         """
         Save user's token for authentication on the web-site in the DB
         """
-        tg_user.verification_code = token
-        tg_user.save()
+        set_token_task.delay(tg_user_id=tg_user.pk, token=token)
 
     def get_users_goals(self, tg_user: TelegramUser) -> QuerySet:
         """
@@ -47,9 +47,8 @@ class DBManager:
         """
         Change tg bot position after user's request
         """
-        tg_user.position = position
-        tg_user.category = category
-        tg_user.save()
+        change_bot_position_task.delay(tg_user_id=tg_user.pk, position=position,
+                                       category_id=category.id if category else None)
 
     def create_new_goal(self, category: Category, title: str, user: User) -> Goal:
         """

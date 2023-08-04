@@ -10,7 +10,7 @@ class MessageSender:
     tg_client = TgClient()
 
     def _send_message(self, chat: id, message: str) -> None:
-        self.tg_client.send_message(chat, message)
+        self.tg_client.create_and_send_message(chat, message)
 
     def send_new_user_message(self, chat: int) -> None:
         """
@@ -52,10 +52,10 @@ class MessageSender:
         """
         Send a message with a verification code and return this verification code
         """
-        message = 'Для того, чтобы подключить приложение, введите на сайте следующий код:'
+        message = 'Для того, чтобы подключить приложение, введите на сайте следующий код:\n'
         token = secrets.token_hex(settings.TOKEN_LENGTH)
-        self._send_message(chat, message)
-        self._send_message(chat, token)
+        self._send_message(chat, message + token)
+        # self._send_message(chat, token)
         return token
 
     def send_wrong_command_message(self, chat: int, commands: dict) -> None:

@@ -45,7 +45,6 @@ services:
   api:
     image: ${DOCKER_USER}/todolist:latest
     env_file: .env
-    tty: true
     depends_on:
       postgres:
         condition: service_healthy
@@ -62,6 +61,31 @@ services:
       migrations:
         condition: service_completed_successfully
 
+  redis:
+    image: redis:7.0
+    restart: always
+    env_file: .env
+    volumes:
+      - redis_data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  celery:
+    image: ${DOCKER_USER}/todolist:latest
+    env_file: .env
+    command: celery -A todolist worker -l info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      api:
+        condition: service_started
+
 volumes:
   postgres_data_todo_app:
   django_static:
+  redis_data:

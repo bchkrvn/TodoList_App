@@ -1,9 +1,11 @@
 from typing import Any
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework import serializers
 from ..models import Board, BoardParticipant
-from core.models import User
+
+User = get_user_model()
 
 
 class BoardParticipantSerializer(serializers.ModelSerializer):

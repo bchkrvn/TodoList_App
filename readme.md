@@ -2,7 +2,7 @@
 
 ## Description:
 **To-do list APP** is a small application for task scheduling. 
-App wrote on Django with PostgreSQL. Tested with using PyTest.
+App wrote on Django with PostgreSQL. Tested with PyTest.
 
 ## Stack:
 * Python 3.9
@@ -10,6 +10,8 @@ App wrote on Django with PostgreSQL. Tested with using PyTest.
 * DRF
 * PostgreSQL
 * PyTest
+* Redis 7.0
+* Celery
 
 ## Application features:
 **Video:**
@@ -20,6 +22,7 @@ App wrote on Django with PostgreSQL. Tested with using PyTest.
 - Create, update, delete categories
 - Create, update, delete goals
 - Watch and create goals using Telegram Bot
+- Send messages and email using Celery
 
 ## How to start:
 **Server is running on http://130.193.53.220**
@@ -41,6 +44,13 @@ DB_PORT=...
 VK_ID=...
 VK_SECRET=...
 TGBOT_TOKEN=...
+REDIS_HOST=...
+REDIS_PORT=...
+REDIS_DB=...
+EMAIL_HOST=...
+EMAIL_HOST_USER=...
+EMAIL_HOST_PASSWORD=...
+EMAIL_PORT=...
 ```
 
 3)  Run the project with the command:  
